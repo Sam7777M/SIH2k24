@@ -1,69 +1,47 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Dr1 = () => {
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        phone: "",
-        companyName: "",
-        password: "",
-        confirmPassword: "",
-    });
-    const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
+    // State for form fields
+    const [name, setName] = useState('');
+    const [code, setCode] = useState('');
+    const [address, setAddress] = useState('');
+    const [region, setRegion] = useState('');
+    const [circle, setCircle] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.id]: e.target.value,
-        });
-    };
+    // State for error and success messages
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const { name, email, phone, companyName, password, confirmPassword } = formData;
+        // Prepare form data
+        const formData = {
+            name,
+            code,
+            address,
+            region,
+            circle,
+            confirmPassword,
+        };
 
-        // Basic form validation
-        if (!name || !email || !phone || !companyName || !password || !confirmPassword) {
-            setError("All fields are required.");
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError("Passwords do not match.");
-            return;
-        }
-
-        // Submit form data to backend
         try {
-            const response = await fetch("http://localhost:5000/api/auth/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setSuccessMessage("Registration successful!");
-                setError(null);
-                setFormData({
-                    name: "",
-                    email: "",
-                    phone: "",
-                    companyName: "",
-                    password: "",
-                    confirmPassword: "",
-                });
+            // Send POST request to backend to register the user
+            const response = await axios.post('http://localhost:5000/api/register-office', formData);  // Adjust the endpoint as needed
+            if (response.data.success) {
+                setSuccessMessage('Registration successful!');
+                setError('');
             } else {
-                setError(data.message || "An error occurred.");
+                setSuccessMessage('');
+                setError(response.data.message || 'Something went wrong. Please try again.');
             }
-        } catch (error) {
-            setError("There was a problem with the registration.");
+        } catch (err) {
+            setSuccessMessage('');
+            setError('Failed to connect to the server. Please try again later.');
         }
     };
 
@@ -86,29 +64,29 @@ const Dr1 = () => {
                     <input
                         type="text"
                         id="name"
-                        value={formData.name}
-                        onChange={handleChange}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         placeholder="Enter your Name here"
                         className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
 
-                {/* Email Address Input */}
+                {/* Office Code Input */}
                 <div className="space-y-2">
                     <label htmlFor="code" className="block text-white text-lg font-semibold mb-2 text-left">
                         Office Code
                     </label>
                     <input
-                        type="code"
+                        type="text"
                         id="code"
-                        value={formData.code}
-                        onChange={handleChange}
-                        placeholder="Enter your Email Address here"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        placeholder="Enter Office Code here"
                         className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
 
-                {/* Phone No Input */}
+                {/* Address Input */}
                 <div className="space-y-2">
                     <label htmlFor="address" className="block text-white text-lg font-semibold mb-2 text-left">
                         Address
@@ -116,62 +94,49 @@ const Dr1 = () => {
                     <input
                         type="text"
                         id="address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        placeholder="Enter your Phone No here"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="Enter Address here"
                         className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
 
-                {/* Company Name Input */}
+                {/* Region Input */}
                 <div className="space-y-2">
-                            <label
-                                htmlFor="destination"
-                                className="block text-white text-lg font-semibold mb-2 text-left"
-                            >
-                                Region/ZOne
-                            </label>
-                            <select
-                                id="destination"
-                                value={formData.destination}
-                                onChange={handleChange}
-                                className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="" disabled>
-                                    Select your Region
-                                </option>
-                                <option value="New York"> Northern </option>
-                                <option value="Los Angeles">Western</option>
-                                <option value="Chicago">Southern</option>
-                                <option value="Houston">Central</option>
-                                <option value="San Francisco">South-Eastern</option>
-                            </select>
-                        </div>
+                    <label htmlFor="region" className="block text-white text-lg font-semibold mb-2 text-left">
+                        Region/Zone
+                    </label>
+                    <select
+                        id="region"
+                        value={region}
+                        onChange={(e) => setRegion(e.target.value)}
+                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="" disabled>Select your Region</option>
+                        <option value="Northern">Northern</option>
+                        <option value="Western">Western</option>
+                        <option value="Southern">Southern</option>
+                        <option value="Central">Central</option>
+                        <option value="South-Eastern">South-Eastern</option>
+                    </select>
+                </div>
 
-                {/* Create Password Input */}
+                {/* Circles Input */}
                 <div className="space-y-2">
-                            <label
-                                htmlFor="destination"
-                                className="block text-white text-lg font-semibold mb-2 text-left"
-                            >
-                                Circles
-                            </label>
-                            <select
-                                id="destination"
-                                value={formData.destination}
-                                onChange={handleChange}
-                                className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="" disabled>
-                                    Select your Circles
-                                </option>
-                                <option value="New York">Delhi Circle</option>
-                                <option value="Los Angeles">Up Circle</option>
-                                <option value="Chicago">Haryana Circle</option>
-                                <option value="Houston">Telangan</option>
-                                <option value="San Francisco">Mumbai Circle</option>
-                            </select>
-                        </div>
+                    <label htmlFor="circle" className="block text-white text-lg font-semibold mb-2 text-left">
+                        Circles
+                    </label>
+                    <select
+                        id="circle"
+                        value={circle}
+                        onChange={(e) => setCircle(e.target.value)}
+                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="" disabled>Select your Circle</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh Circle</option>
+                        {/* Add more circle options as needed */}
+                    </select>
+                </div>
 
                 {/* Confirm Password Input */}
                 <div className="space-y-2">
@@ -181,8 +146,8 @@ const Dr1 = () => {
                     <input
                         type="password"
                         id="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Re-enter your Password"
                         className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -194,23 +159,23 @@ const Dr1 = () => {
 
                 {/* Submit Button */}
                 <div className="flex justify-center mt-6">
-                <Link
-            to="reg11" // Replace with your target route
-            className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-md w-full max-w-xs text-center block"
-        >
-            NEXT
-        </Link>
+                    <Link
+                        to="/reg11" // Replace with the actual path where you want to navigate
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-md w-full max-w-xs text-center block"
+                    >
+                        NEXT
+                    </Link>
                 </div>
 
                 {/* Sign In Button */}
                 <div className="flex justify-center mt-4">
-    <Link
-        to="/login"
-        className="text-white underline text-sm hover:text-orange-500"
-    >
-        I have an account - Sign In
-    </Link>
-</div>
+                    <Link
+                        to="/login"
+                        className="text-white underline text-sm hover:text-orange-500"
+                    >
+                        I have an account - Sign In
+                    </Link>
+                </div>
             </form>
         </div>
     );

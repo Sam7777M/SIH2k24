@@ -1,3 +1,4 @@
+// src/pages/QrCodeContext.jsx
 import React, { createContext, useState } from "react";
 
 const QrCodeContext = createContext();

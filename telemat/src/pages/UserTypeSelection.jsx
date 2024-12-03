@@ -34,7 +34,7 @@ const UserTypeSelection = () => {
                 </Link>
 
                 {/* 3PL Button */}
-                <Link to="/3pl">
+                <Link to="/threepl">
                     <button
                         className="bg-orange-500 text-white py-3 px-8 rounded-md text-lg font-semibold hover:bg-orange-600"
                     >

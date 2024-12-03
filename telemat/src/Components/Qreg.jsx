@@ -1,10 +1,37 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import QrCodeContext from "../pages/QrCodeContext";
 
 const Qreg = () => {
-    //const { qrData } = useContext(QrCodeContext);
-    const qrData = useContext(QrCodeContext);
+    const { qrData } = useContext(QrCodeContext);
+
+    useEffect(() => {
+        if (qrData) {
+            // Save the QR data to the database
+            const saveQrToDatabase = async () => {
+                try {
+                    const response = await fetch("http://localhost:5000/api/saveQr", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ qrData }),
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        console.log("QR Code saved to database:", result);
+                    } else {
+                        console.error("Failed to save QR Code:", result);
+                    }
+                } catch (error) {
+                    console.error("Error saving QR Code to database:", error);
+                }
+            };
+
+            saveQrToDatabase();
+        }
+    }, [qrData]);
 
     return (
         <div

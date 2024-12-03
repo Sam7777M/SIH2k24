@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../Components/Navbar';
 import Live from './Live'; // Assuming you have a Navbar component
 import { Link } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 const Dashboard1 = () => {
   // State to store fetched data
@@ -38,6 +39,8 @@ const Dashboard1 = () => {
   });
 
   const [loading , setLoading] = useState(true);
+  const location = useLocation();
+  const { companyName } = location.state || {};
 
   // Fetch data from the backend
   useEffect(() => {
@@ -69,6 +72,40 @@ const Dashboard1 = () => {
     fetchData();
   }, []);
 
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+      const fetchMessages = async () => {
+          try {
+              const response = await fetch("http://localhost:5000/api/messages");
+              if (!response.ok) throw new Error("Failed to fetch messages");
+              const data = await response.json();
+              setMessages(data);
+          } catch (err) {
+              console.error(err.message);
+          }
+      };
+
+      fetchMessages();
+  }, []);
+
+  const handleResponse = async (messageId, status) => {
+      try {
+          const response = await fetch(`http://localhost:5000/api/messages/${messageId}`, {
+              method: "PATCH",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status }),
+          });
+
+          if (!response.ok) throw new Error("Failed to update message status");
+          setMessages(messages.filter((msg) => msg._id !== messageId));
+      } catch (err) {
+          console.error(err.message);
+      }
+  };
+
   return (
     <div className="h-screen bg-gradient-to-b from-gray-200 to-blue-100 p-4">
       {/* Navbar */}
@@ -84,7 +121,7 @@ const Dashboard1 = () => {
        style={{ width: "1300px", left:"100px" }} // Decreased width
 >
   <div className="w-4 h-4 bg-[rgba(30,45,52,1)] rounded-full mr-10"></div>
-  <span className="text-white">Dashboard</span>
+  <span className="text-white">Welcome {companyName || "User"}</span>
 
   {/* Ellipse 12 */}
   <div 
@@ -754,8 +791,33 @@ const Dashboard1 = () => {
           </div>
         </div>
       </div>
+      <div className="min-h-screen bg-gray-100 p-8">
+            <h1 className="text-xl font-bold">Partner Dashboard</h1>
+            {messages.map((message) => (
+                <div key={message._id} className="bg-white p-4 rounded shadow mb-4">
+                    <p>{message.message}</p>
+                    <div className="flex space-x-4 mt-2">
+                        <button
+                            onClick={() => handleResponse(message._id, "Accepted")}
+                            className="bg-green-500 text-white p-2 rounded"
+                        >
+                            Accept
+                        </button>
+                        <button
+                            onClick={() => handleResponse(message._id, "Declined")}
+                            className="bg-red-500 text-white p-2 rounded"
+                        >
+                            Decline
+                        </button>
+                    </div>
+                </div>
+            ))}
+        </div>
     </div>
+    
   );
 };
+
+
 
 export default Dashboard1;

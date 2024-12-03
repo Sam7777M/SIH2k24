@@ -1,70 +1,59 @@
-require("dotenv").config(); // For environment variables
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const http = require("http"); // For creating HTTP server
-const socketIo = require("socket.io"); // For WebSocket
-const multer = require("multer"); // For file uploads
-const path = require("path"); // For handling file paths
-const fs = require("fs"); // For filesystem operations
+const http = require("http");
+const socketIo = require("socket.io");
+const multer = require("multer");
+const path = require("path");
+const { Schema } = mongoose;
 
 const app = express();
-const server = http.createServer(app); // HTTP server for WebSocket
+const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173", // Frontend origin
+    origin: "http://localhost:5173", // React frontend
     methods: ["GET", "POST"],
   },
 });
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.json()); // Parse JSON requests
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve uploaded files
-
-// MongoDB Connection
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/parcelDB";
+// **MongoDB Connection**
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/centralDatabase";
 mongoose
-  .connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Database connection error:", err));
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// Mongoose Schemas
+// **Middleware**
+app.use(cors());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.options("*", (req, res) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.sendStatus(200);
+});
+
+// **Schemas and Models**
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  phone: { type: String, required: true },
-  companyName: { type: String, required: true },
+  registrationNumber: { type: String, required: true },
+  emailid: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  serviceType: { type: String, required: true },
 });
 
 const parcelSchema = new mongoose.Schema({
-  parcelId: String,
-  pickupPoint: String,
-  destinationPoint: String,
-  driverVehicle: String,
-  numberOfEntities: Number,
-  parcelWeight: String,
-  parcelVolume: String,
-});
-
-const registrationSchema = new mongoose.Schema({
-  cdlNumber: { type: String, required: true },
-  mcNumber: { type: String, required: true },
-  gstNumber: { type: String, required: true },
-  panNumber: { type: String, required: true },
-  vehicleCert: { type: String, required: true },
-  insuranceCert: { type: String, required: true },
-  panCard: { type: String, required: true },
-  transportLicense: { type: String, required: true },
-  cdlDocument: { type: String, required: true },
-  mcDocument: { type: String, required: true },
+  sender: String,
+  receiver: String,
+  address: String,
+  status: { type: String, default: "Pending" },
 });
 
 const scheduleSchema = new mongoose.Schema({
@@ -76,108 +65,158 @@ const scheduleSchema = new mongoose.Schema({
   dropDate: String,
 });
 
-// Models
-const User = mongoose.model("User", userSchema);
-const Parcel = mongoose.model("Parcel", parcelSchema);
-const Registration = mongoose.model("Registration", registrationSchema);
-const Schedule = mongoose.model("Schedule", scheduleSchema);
 
-// Multer File Upload Setup
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = "uploads/";
-    if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath); // Create folder if not exists
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Unique filename
-  },
+const registrationSchema = new mongoose.Schema({
+  cdlNumber: String,
+  mcNumber: String,
+  gstNumber: String,
+  panNumber: String,
+  vehicleCert: String,
+  insuranceCert: String,
+  panCard: String,
+  transportLicense: String,
+  cdlDocument: String,
+  mcDocument: String,
 });
 
-const upload = multer({ storage });
-
-// API Routes
+const User = mongoose.model("User", userSchema);
+const Parcel = mongoose.model("Parcel", parcelSchema);
+const Schedule = mongoose.model("Schedule", scheduleSchema);
+const Registration = mongoose.model("Registration", registrationSchema);
 
 // **User Registration**
-app.post("/api/auth/register", async (req, res) => {
-  const { name, email, phone, companyName, password } = req.body;
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log("MongoDB connection error:", err));
 
-  if (!name || !email || !phone || !companyName || !password) {
+// Schema for the user
+const userSchemaa = new Schema({
+  registrationNumber: { type: String, required: true },
+  emailid: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  serviceType: { type: String, required: true },
+});
+
+const User4 = mongoose.model("User4", userSchemaa);
+
+// Registration route (POST)
+app.post("/api/auth/register", async (req, res) => {
+  const { registrationNumber, emailid, password, confirmPassword, serviceType } = req.body;
+
+  // Basic validation
+  if (!registrationNumber || !emailid || !password || !confirmPassword || !serviceType) {
     return res.status(400).json({ message: "All fields are required." });
   }
 
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match." });
+  }
+
   try {
-    const existingUser = await User.findOne({ email });
+    // Check if the user already exists
+    const existingUser = await User4.findOne({ emailid });
     if (existingUser) {
-      return res.status(400).json({ message: "Email already registered." });
+      return res.status(400).json({ message: "User already exists." });
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
-      name,
-      email,
-      phone,
-      companyName,
+
+    // Create a new user
+    const newUser = new User4({
+      registrationNumber,
+      emailid,
       password: hashedPassword,
+      serviceType,
     });
+
+    // Save the user to the database
     await newUser.save();
 
     res.status(201).json({ message: "Registration successful!" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error. Please try again later." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "There was a problem with the registration." });
   }
 });
 
 // **User Login**
-app.post("/api/auth/login", async (req, res) => {
-  const { email, password } = req.body;
+app.post("/api/auth/login1", async (req, res) => {
+  const { emailid, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const user = await User.findOne({ emailid });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials" });
 
-    res.status(200).json({
-      message: "Login successful",
-      user: { id: user._id, name: user.name, email: user.email },
-    });
+    res.status(200).json({ message: "Login successful", user });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error });
   }
 });
 
 // **Save Parcel Data**
-app.post("/api/save-parcel", async (req, res) => {
+app.post("/api/parcels", async (req, res) => {
   try {
     const parcel = new Parcel(req.body);
     await parcel.save();
-    res.status(201).json({ message: "Parcel data saved successfully!" });
+    res.status(201).json({ message: "Parcel saved successfully!" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to save parcel data" });
+    res.status(500).json({ message: "Failed to save parcel data", error });
   }
 });
 
-// **Fetch All Parcels**
+// **Fetch Parcels**
 app.get("/api/parcels", async (req, res) => {
   try {
     const parcels = await Parcel.find();
     res.json(parcels);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch parcel data" });
+    res.status(500).json({ message: "Failed to fetch parcels", error });
   }
 });
 
-// **Save Registration Data**
+
+
+
+
+// **Save Schedule Data**
+app.post("/api/schedule", async (req, res) => {
+  try {
+    const schedule = new Schedule(req.body);
+    await schedule.save();
+    res.status(201).send({ message: "Schedule saved successfully" });
+  } catch (error) {
+    res.status(500).send({ message: "Failed to save schedule", error });
+  }
+});
+
+app.get("/api/schedules", async (req, res) => {
+  try {
+    const schedules = await Schedule.find();
+    res.status(200).json(schedules);
+  } catch (error) {
+    res.status(500).send({ message: "Failed to fetch schedules", error });
+  }
+});
+
+// **File Upload**
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
+});
+const upload = multer({ storage });
+
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  res.json({ message: "File uploaded successfully", file: req.file });
+});
+
+// **POST /api/documents for registration form submission**
 app.post(
-  "/api/register",
+  "/api/documents",
   upload.fields([
     { name: "vehicleCert", maxCount: 1 },
     { name: "insuranceCert", maxCount: 1 },
@@ -195,6 +234,7 @@ app.post(
         return res.status(400).json({ error: "All fields are required." });
       }
 
+      // Save registration details
       const registration = new Registration({
         cdlNumber,
         mcNumber,
@@ -217,37 +257,318 @@ app.post(
   }
 );
 
-// **Save Schedule Data**
-app.post("/api/schedule", async (req, res) => {
+// **WebSocket for Real-Time Location**
+let connectedUsers = 0;
+
+// Set up server to listen for location updates and track connections
+io.on("connection", (socket) => {
+  connectedUsers++;
+  console.log("A new user connected. Connected users:", connectedUsers);
+
+  // Broadcast the number of connected users to all clients
+  io.emit("connected-users", connectedUsers);
+
+  // Listen for location data from the client (Aopt component)
+  socket.on("send-location", (data) => {
+    console.log("Received location:", data);
+    // Emit the location to all connected clients (Live component)
+    io.emit("receive-location", data);
+  });
+
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    connectedUsers--;
+    console.log("A user disconnected. Connected users:", connectedUsers);
+    // Broadcast the updated number of connected users
+    io.emit("connected-users", connectedUsers);
+  });
+});
+
+
+
+
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log(err));
+
+// User Schema (Mongoose Model)
+
+
+
+
+// Routes
+
+// POST route for registration
+
+
+// Handle errors in routes
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ message: "Something went wrong!" });
+});
+//login for dop
+
+
+app.post("/api/auth/login2", async (req, res) => {
+  const { emailid, password } = req.body;
+
+  if (!emailid || !password) {
+      return res.status(400).json({ message: "All fields are required." });
+  }
+
   try {
-    const schedule = new Schedule(req.body);
-    await schedule.save();
-    res.status(201).send({ message: "Schedule saved successfully" });
+      // Find the user by email
+      const user = await User4.findOne({ emailid });
+
+      if (!user) {
+          return res.status(401).json({ message: "Invalid email or password." });
+      }
+
+      // Compare the password with the hashed password in the database
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+          return res.status(401).json({ message: "Invalid email or password." });
+      }
+
+      // Store the user ID in the session to maintain the session
+      req.session.userId = user._id;
+
+      res.status(200).json({ message: "Login successful!" });
   } catch (error) {
-    res.status(500).send({ message: "Failed to save schedule", error });
+      console.error("Login error: ", error);
+      res.status(500).json({ message: "Server error." });
   }
 });
 
-// **WebSocket for Real-time Location Updates**
-let users = {}; // Store user locations by socket ID
+//3pl
+app.use(express.json()); // Middleware to parse JSON request bodies
 
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-  socket.on("send-location", (data) => {
-    const { latitude, longitude } = data;
-    users[socket.id] = { id: socket.id, latitude, longitude };
-    io.emit("receive-location", users[socket.id]); // Broadcast to all clients
-  });
+// Define the User schema
+const tplSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
+    companyName: { type: String, required: true },
+    password: { type: String, required: true },
+    confirmPassword : { type: String, required: true },
 
-  socket.on("disconnect", () => {
-    console.log("A user disconnected:", socket.id);
-    delete users[socket.id];
-  });
 });
 
-// Server listening
+// Hash the password before saving the user
+
+
+// Create User model
+
+
+// Register user controller
+
+app.post("/api/auth/register", async (req, res) => {
+  const { name, email, phone, companyName, password, confirmPassword } = req.body;
+
+  if (!name || !email || !phone || !companyName || !password|| !confirmPassword) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already registered." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({
+      name,
+      email,
+      phone,
+      companyName,
+      password: hashedPassword,
+      confirmPassword: hashedPassword,
+    });
+    await newUser.save();
+
+    res.status(201).json({ message: "Registration successful!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+});
+
+// qr data save
+
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+
+
+const qrSchema = new mongoose.Schema({
+  qrData: String, // Store the QR code data
+  createdAt: { type: Date, default: Date.now },
+});
+
+const QR = mongoose.model("QR", qrSchema);
+
+// Save QR data endpoint
+app.post("/api/saveQr", async (req, res) => {
+  try {
+      const { qrData } = req.body;
+      const newQR = new QR({ qrData });
+      await newQR.save();
+      res.status(201).json({ message: "QR Code data saved successfully!" });
+  } catch (error) {
+      res.status(500).json({ error: "Failed to save QR Code data." });
+  }
+});
+
+
+//fetch the destination login
+
+//fo reg
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("MongoDB connected"))
+.catch((err) => console.error("MongoDB connection error:", err));
+
+// Define a schema and model for form data
+const FormDataSchema = new mongoose.Schema({
+  name: String,
+  city: String,
+  phone: String,
+  companyName: String,
+  password: String,
+  truck: String,
+  preferredFrom: String,
+  preferredTo: String,
+  preferredCost: String,
+});
+
+const FormData = mongoose.model("FormData", FormDataSchema);
+
+// Route to handle form submissions
+app.post("/api/register", async (req, res) => {
+  try {
+    const { companyName, password, ...otherDetails } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newData = new FormData({ ...otherDetails, companyName, password: hashedPassword });
+    await newData.save();
+    res.status(201).json({ message: "Registration successful!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Route to get all data (optional)
+app.get("/api/data", async (req, res) => {
+  try {
+    const data = await FormData.find(); // Fetch all data from the database
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+//login fllet
+
+app.post("/api/login", async (req, res) => {
+  const { companyName, password } = req.body;
+
+  try {
+    const user = await FormData.findOne({ companyName });
+    if (!user) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    res.status(200).json({ message: "Login successful", companyName: user.companyName });
+  } catch (error)  {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+//message function
+
+mongoose.connect('mongodb://localhost:27017/fleet-management', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log("MongoDB Connected"))
+.catch(err => console.log(err));
+
+// Message Schema & Model
+const messageSchema = new mongoose.Schema({
+  partnerId: String,
+  message: String,
+  status: { type: String, default: "Pending" },
+});
+
+const Message = mongoose.model('Message', messageSchema);
+
+// Routes
+app.post('/api/sendMessage', async (req, res) => {
+  const { partnerId, message } = req.body;
+
+  try {
+      const newMessage = await Message.create({ partnerId, message });
+      res.status(201).json(newMessage);
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to send message' });
+  }
+});
+
+app.get('/api/messages', async (req, res) => {
+  try {
+      const messages = await Message.find();
+      res.json(messages);
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch messages' });
+  }
+});
+
+app.patch('/api/messages/:id', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+      const updatedMessage = await Message.findByIdAndUpdate(
+          id,
+          { status },
+          { new: true }
+      );
+      res.json(updatedMessage);
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to update message status' });
+  }
+});
+
+
+
+
+
+
+  
+
+// **Fallback Route**
+app.use((req, res) => res.status(404).json({ message: "Routesss not found" }));
+
+// **Start Server**
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

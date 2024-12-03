@@ -1,35 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-// User schema
 const userSchema = new mongoose.Schema({
-  userType: {
-    type: String,
-    required: true,
-    enum: ['client', 'fleetOwner'], // Limit userType to either client or fleetOwner
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true, // Ensure unique email
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  additionalInfo: {
-    type: String,
-    required: true, // For fleet owner, it might contain truck info
-  },
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  companyName: { type: String, required: true },
+  password: { type: String, required: true },
+  confirmPassword : { type: String, required: true },
 });
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model("User", userSchema);

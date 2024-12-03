@@ -1,8 +1,10 @@
+// src/components/ScheduleReg.jsx
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import QrCodeContext from "../pages/QrCodeContext";
 
 const ScheduleReg = () => {
-    const { setQrData } = useContext(QrCodeContext); // Destructure setQrData from the context
+    const { setQrData } = useContext(QrCodeContext);
     const [formData, setFormData] = useState({
         name: "",
         entities: "",
@@ -11,6 +13,7 @@ const ScheduleReg = () => {
         pickupDate: "",
         dropDate: "",
     });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -22,28 +25,34 @@ const ScheduleReg = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const qrCodeValue = JSON.stringify(formData);
-        setQrData(qrCodeValue); // Set the QR code data in the context
+
+        const uniqueId = `ID-${Date.now()}`; // Generate a unique ID
+        const qrCodeValue = JSON.stringify({ ...formData, uniqueId });
 
         try {
-            // Send the form data to the backend (database)
+            // Send the form data to the backend
             const response = await fetch("http://localhost:5000/api/schedule", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData), // Send the form data as JSON
+                body: JSON.stringify({ ...formData, uniqueId }),
             });
 
             const result = await response.json();
             if (response.ok) {
                 console.log("Data submitted successfully:", result);
-                // Optionally, handle success (e.g., show a message or redirect)
+
+                // Set the QR code data in context and navigate to the next page
+                setQrData(qrCodeValue);
+                navigate("/choosepartner");
             } else {
                 console.error("Error submitting data:", result);
+                alert("Failed to submit the data. Please try again.");
             }
         } catch (error) {
             console.error("Error submitting data:", error);
+            alert("An error occurred while submitting the data. Please try again.");
         }
     };
 
@@ -58,7 +67,7 @@ const ScheduleReg = () => {
             }}
         >
             <h1 className="text-black text-center text-7xl font-bold mb-4 mt-[150px]">
-                <span className="text-blue-500">Schedule a new Delivery</span>
+                <span className="text-blue-500">Schedule a New Delivery</span>
             </h1>
             <form
                 className="w-full max-w-4xl bg-transparent p-6 rounded-md space-y-8"
@@ -73,21 +82,14 @@ const ScheduleReg = () => {
                             >
                                 Name
                             </label>
-                            <select
+                            <input
+                                type="text"
                                 id="name"
                                 value={formData.name}
                                 onChange={handleChange}
+                                placeholder="Enter your name"
                                 className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="" disabled>
-                                    Pickup Location
-                                </option>
-                                <option value="John">John</option>
-                                <option value="Jane">Jane</option>
-                                <option value="Doe">Doe</option>
-                                <option value="Alice">Alice</option>
-                                <option value="Bob">Bob</option>
-                            </select>
+                            />
                         </div>
 
                         <div className="space-y-2">
@@ -133,21 +135,14 @@ const ScheduleReg = () => {
                             >
                                 Destination Location
                             </label>
-                            <select
+                            <input
+                                type="text"
                                 id="destination"
                                 value={formData.destination}
                                 onChange={handleChange}
+                                placeholder="Enter destination"
                                 className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="" disabled>
-                                    Select your Destination Location
-                                </option>
-                                <option value="New York">New York</option>
-                                <option value="Los Angeles">Los Angeles</option>
-                                <option value="Chicago">Chicago</option>
-                                <option value="Houston">Houston</option>
-                                <option value="San Francisco">San Francisco</option>
-                            </select>
+                            />
                         </div>
 
                         <div className="space-y-2">
