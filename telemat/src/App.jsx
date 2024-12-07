@@ -36,7 +36,24 @@ import Login2 from "./pages/Login2";
 import Threepl from "./pages/Threepl";
 import ChoosePartner from "./pages/ChoosePartner";
 import PartnerDashboard from "./pages/Dashboard1";
-
+import Fleetnot from "./pages/Fleetnot";
+import Dopnot from "./pages/Dopnot";
+import UploadQRCode from "./pages/UploadQRCode";
+import TrackingPage from "./pages/Tracking";
+import LiveTracking from "./pages/LiveTracking";
+import Map from "./pages/Map";
+import Login3 from "./pages/Login3";
+import Driver from "./pages/Driver";
+import Login4 from "./pages/Login4";
+import PartnerDataPage from "./pages/ShowDataPage";
+import ShowDataPage from "./pages/ShowDataPage";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Live2 from "./pages/Live2";
+import Schedulet from "./pages/Shdeulet";
+import Qregt from "./Components/Qregt";
+import ChoosePartnert from "./pages/ChoosePartnert";
 
 function App() {
   return (
@@ -55,6 +72,7 @@ function App() {
             <Route path="/dop" element={<Reg3 />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/schedule1" element={<Schedule />} />
+            <Route path="/schedulet" element={<Schedulet />} />
             <Route path="/qreg" element={<Qreg />} />
             <Route path="/inqr" element={<InQr />} />
             <Route path="/dashboard1" element={<PartnerDashboard />} />
@@ -66,6 +84,7 @@ function App() {
             <Route path="/reg13" element={<Reg13 />} />
             <Route path="/reg14" element={<Reg14 />} />
             <Route path="/fo1" element={<Fo1 />} />
+            <Route path="/show-data" element={<ShowDataPage />} />
             <Route path="/fo2" element={<Fo2 />} />
             <Route path="/reg32" element={<Reg32 />} />
             <Route path="/reg33" element={<Lomda />} />
@@ -74,6 +93,24 @@ function App() {
             <Route path="/schedule-reg" element={<ScheduleReg />} />
             <Route path="/live" element={<Live />} />
             <Route path="/choosepartner" element={<ChoosePartner />} />
+            <Route path="/fleetnot" element={<Fleetnot />} />
+            <Route path="/dopnot" element={<Dopnot />} />
+            <Route path="/upload" element={<UploadQRCode />} />
+            <Route path="/tracking" element={<TrackingPage />} />
+            <Route path="/livetracking" element={<LiveTracking />} />
+            <Route path="/map" element={<Map />} />
+            <Route path="/login3" element={<Login3 />} />
+            <Route path="/driver" element={<Driver />} />
+            <Route path="/login4" element={<Login4 />} />
+            <Route path="/dashboardd" element={<Dashboard />} />   {/**dlere */}
+            <Route path="/login" element={<Login/>} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/rashboard1" element={<Dashboard1 />} /> {/**dlere */}
+            <Route path="/live2" element={<Live2 />} />
+            <Route path="/qregt" element={<Qregt />} />
+            <Route path="/choosepartnert" element={<ChoosePartnert />} />
+            
+
           </Routes>
         </div>
       </Router>

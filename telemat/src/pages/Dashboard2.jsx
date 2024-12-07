@@ -395,21 +395,24 @@ const Dashboard2 = () => {
       left: '230px', // Adjust position for overlap
     }}
   ></div>
-<div
-    style={{
-      position: 'absolute',
-      top: '60px', // Adjust this value to position text below the ellipse
-      left: '50px', // Keep the text aligned with the ellipse
-      color: 'rgba(255, 255, 255, 1)', // Text color
-      fontSize: '6px', // Font size as specified
-      fontWeight: '400', // Set font weight to 400
-      lineHeight: '7.26px', // Set line height
-      textAlign: 'center', // Center the text
-      width: '100%', // Ensure text width matches the container's width
-    }}
-  >
-   Alerts &  <br />  Notifications
-  </div>
+<Link
+      to="/schedule1" // Replace with the actual route you want to navigate to
+      style={{
+        position: "absolute",
+        top: "60px", // Adjust this value to position text below the ellipse
+        left: "50px", // Keep the text aligned with the ellipse
+        color: "rgba(255, 255, 255, 1)", // Text color
+        fontSize: "6px", // Font size as specified
+        fontWeight: "400", // Set font weight to 400
+        lineHeight: "7.26px", // Set line height
+        textAlign: "center", // Center the text
+        width: "100%", // Ensure text width matches the container's width
+        textDecoration: "none", // Remove underline from the link
+        cursor: "pointer", // Make it look like a button
+      }}
+    >
+      Alerts & <br /> Notifications
+    </Link>
 
   {/* Ellipse 4 */}
   <div

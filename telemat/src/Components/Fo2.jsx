@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Fo2 = () => {
   const [formData, setFormData] = useState({
@@ -16,20 +17,18 @@ const Fo2 = () => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate(); // Hook for navigation
 
-  // Handle text input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
   };
 
-  // Handle file input changes
   const handleFileChange = (e) => {
     const { id, files } = e.target;
     setFormData({ ...formData, [id]: files[0] });
   };
 
-  // Validate form
   const validateForm = () => {
     const requiredFields = [
       "cdlNumber",
@@ -55,7 +54,6 @@ const Fo2 = () => {
     return newErrors;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,13 +74,15 @@ const Fo2 = () => {
       const response = await fetch("http://localhost:5000/api/documents", {
         method: "POST",
         body: data,
-        // Remove the Content-Type header because `FormData` sets it automatically.
       });
 
       const result = await response.json();
 
       if (response.ok) {
         alert("Registration successful!");
+        setTimeout(() => {
+          navigate("/login"); // Redirect to the next page
+        }, 1500);
         setFormData({
           cdlNumber: "",
           mcNumber: "",

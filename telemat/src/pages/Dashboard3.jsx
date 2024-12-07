@@ -8,9 +8,9 @@ const Dashboard3 = () => {
   const [dashboardData, setDashboardData] = useState({
     overviewMetrics: {
       parcelsInTransit: 0,
-      completedDeliveries: 0,
+      completedDeliveries: 0,    
       pendingDeliveries: 0,
-    },
+    },                                     
     fuelEfficiency: {
       averageFuelConsumption: 0,
       fuelCostTrends: [],
@@ -172,7 +172,7 @@ const Dashboard3 = () => {
           zIndex: 2,
         }}
       >
-        Fuel Efficiency
+        Fuel Efficiency      
       </div>
 
       {/* Light div overlapping */}
@@ -182,7 +182,7 @@ const Dashboard3 = () => {
           width: '162px',
           height: '26px',
           top: '150px',
-          left: '20px',
+          left: '20px',          
           gap: '0px',
           borderRadius: '10px',
           opacity: '1',
@@ -304,7 +304,7 @@ const Dashboard3 = () => {
 >
   {/* Ellipse 1 */}
   <Link
-  to="/schedule1" // The link you want to navigate to
+  to="/schedulet" // The link you want to navigate to
   style={{
     position: 'absolute',
     width: '50px',
@@ -395,21 +395,24 @@ const Dashboard3 = () => {
       left: '230px', // Adjust position for overlap
     }}
   ></div>
-<div
-    style={{
-      position: 'absolute',
-      top: '60px', // Adjust this value to position text below the ellipse
-      left: '50px', // Keep the text aligned with the ellipse
-      color: 'rgba(255, 255, 255, 1)', // Text color
-      fontSize: '6px', // Font size as specified
-      fontWeight: '400', // Set font weight to 400
-      lineHeight: '7.26px', // Set line height
-      textAlign: 'center', // Center the text
-      width: '100%', // Ensure text width matches the container's width
-    }}
-  >
-   Alerts &  <br />  Notifications
-  </div>
+<Link
+      to="/schedulet" //scheduling 
+      style={{
+        position: "absolute",
+        top: "60px", // Adjust this value to position text below the ellipse
+        left: "50px", // Keep the text aligned with the ellipse
+        color: "rgba(255, 255, 255, 1)", // Text color
+        fontSize: "6px", // Font size as specified
+        fontWeight: "400", // Set font weight to 400
+        lineHeight: "7.26px", // Set line height
+        textAlign: "center", // Center the text
+        width: "100%", // Ensure text width matches the container's width
+        textDecoration: "none", // Remove underline from the link
+        cursor: "pointer", // Make it look like a button
+      }}
+    >
+      Alerts & <br /> Notifications
+    </Link>
 
   {/* Ellipse 4 */}
   <div

@@ -21,29 +21,47 @@ const AdjustMapBounds = ({ route, startPoint, endPoint }) => {
 };
 
 const Aopt = () => {
-  const [schedules, setSchedules] = useState([]);
-  const [selectedSchedule, setSelectedSchedule] = useState("");
+  const [destination, setDestination] = useState("");
+  const [destinationName, setDestinationName] = useState("");
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
   const [route, setRoute] = useState([]);
+  const [distance, setDistance] = useState(null);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
-    // Fetch schedules from the server
-    axios.get("http://localhost:5000/api/schedules")
-      .then((response) => setSchedules(response.data))
-      .catch((error) => console.error("Error fetching schedules:", error));
-  }, []);
+    const savedQrData = localStorage.getItem("qrrData");
+    if (savedQrData) {
+      try {
+        const parsedData = JSON.parse(savedQrData);
+        setDestination(parsedData.destination);
+        setUser(parsedData.name); // Extract user's name
+      } catch (error) {
+        console.error("Error parsing saved QR data:", error);
+      }
+    }
 
-  useEffect(() => {
-    // Get user's current location
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setStartPoint({ lat: latitude, lng: longitude });
-      },
-      (error) => console.error("Error fetching location:", error)
-    );
-  }, []);
+    const updateLocationAndSendToServer = async (position) => {
+      const { latitude, longitude } = position.coords;
+      const currentLocation = { lat: latitude, lng: longitude, name: user };
+      setStartPoint(currentLocation);
+
+      try {
+        await axios.post("http://localhost:5000/api/coordinates", currentLocation);
+      } catch (error) {
+        console.error("Error sending location to server:", error);
+      }
+    };
+
+    const locationInterval = setInterval(() => {
+      navigator.geolocation.getCurrentPosition(
+        updateLocationAndSendToServer,
+        (error) => console.error("Error fetching location:", error)
+      );
+    }, 5000);
+
+    return () => clearInterval(locationInterval);
+  }, [user]);
 
   const fetchRoute = async (start, end) => {
     try {
@@ -52,25 +70,31 @@ const Aopt = () => {
       );
       const routeCoordinates = response.data.routes[0].geometry.coordinates.map((coord) => [coord[1], coord[0]]);
       setRoute(routeCoordinates);
+      const distanceInKm = response.data.routes[0].distance / 1000;
+      setDistance(distanceInKm.toFixed(2));
     } catch (error) {
       console.error("Error fetching route:", error);
     }
   };
 
   const handleGetRoute = async () => {
-    if (!startPoint || !selectedSchedule) {
-      alert("Please select a schedule and ensure your location is enabled.");
+    if (!startPoint) {
+      alert("Location not found. Please enable your location.");
+      return;
+    }
+    if (!destination) {
+      alert("Destination not found. Ensure the QR code data is valid.");
       return;
     }
 
-    const selectedDestination = schedules.find((schedule) => schedule._id === selectedSchedule).destination;
     try {
       const response = await axios.get(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(selectedDestination)}`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination)}`
       );
       if (response.data.length > 0) {
-        const { lat, lon } = response.data[0];
+        const { lat, lon, display_name } = response.data[0];
         setEndPoint({ lat: parseFloat(lat), lng: parseFloat(lon) });
+        setDestinationName(display_name);
         fetchRoute(startPoint, { lat: parseFloat(lat), lng: parseFloat(lon) });
       } else {
         alert("Destination not found.");
@@ -83,38 +107,15 @@ const Aopt = () => {
   return (
     <div>
       <h1>Route Optimizer</h1>
-      <p>Select a schedule to calculate the route.</p>
-      <select
-        value={selectedSchedule}
-        onChange={(e) => setSelectedSchedule(e.target.value)}
-        style={{ padding: "5px", width: "300px", marginBottom: "10px" }}
-      >
-        <option value="">Select Schedule</option>
-        {schedules.map((schedule) => (
-          <option key={schedule._id} value={schedule._id}>
-            {schedule.name} - {schedule.destination}
-          </option>
-        ))}
-      </select>
-      <button
-        onClick={handleGetRoute}
-        style={{
-          padding: "10px",
-          marginLeft: "10px",
-          backgroundColor: "#4caf50",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
+      <h2>User: {user}</h2>
+      <button onClick={handleGetRoute} style={{ padding: "10px", backgroundColor: "#4caf50", color: "#fff" }}>
         Get Route
       </button>
+      {destinationName && <h2>Destination: {destinationName}</h2>}
+      {distance && <h3>Distance: {distance} km</h3>}
+
       <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: "500px", width: "100%", marginTop: "20px" }}>
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {startPoint && (
           <Marker position={[startPoint.lat, startPoint.lng]}>
             <Popup>Your Location</Popup>
