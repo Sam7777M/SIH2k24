@@ -37,7 +37,6 @@ const Dashboard2 = () => {
     },
   });
 
-  const [loading , setLoading] = useState(true);
 
   // Fetch data from the backend
   useEffect(() => {
@@ -62,7 +61,7 @@ const Dashboard2 = () => {
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
-        setLoading(false);
+        console.log('Final')
       }
     };
 
