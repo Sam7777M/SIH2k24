@@ -79,6 +79,13 @@ const userSchemaa = new Schema({
 
 const User4 = mongoose.model("User4", userSchemaa);
 
+
+// Checking  // Testing
+app.use("/a", (req, res) => {
+  res.send('Hello World!!');
+});
+
+
 // Registration route (POST)
 app.post("/api/auth/register", async (req, res) => {
   const { registrationNumber, emailid, password, confirmPassword, serviceType } = req.body;
