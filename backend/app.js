@@ -80,10 +80,6 @@ const userSchemaa = new Schema({
 const User4 = mongoose.model("User4", userSchemaa);
 
 
-// Checking  // Testing
-app.get("/a", (req, res) => {
-  res.send('Hello World!!');
-});
 
 
 // Registration route (POST)
