@@ -81,7 +81,7 @@ const User4 = mongoose.model("User4", userSchemaa);
 
 
 // Checking  // Testing
-app.use("/a", (req, res) => {
+app.get("/a", (req, res) => {
   res.send('Hello World!!');
 });
 
