@@ -60,6 +60,7 @@ const FeatureSection = ({ title, subtitle, description, imgSrc, reverse }) => (
             height: '360px',
             borderRadius: '8px',
             objectFit: 'cover',
+           
           }}
         />
       </div>
@@ -78,6 +79,7 @@ const Lomda = () => {
         'Hamare smart algorithms aapko dikhayenge sabse chhota, sabse tez aur sabse efficient raasta, taaki har delivery time pe ho aur cost kam aaye.',
       imgSrc: '/public/images/1a.png',
       reverse: false,
+      
     },
     {
       title: 'Real-Time Tracking',
@@ -118,6 +120,15 @@ const Lomda = () => {
         'Stay ahead of potential breakdowns by scheduling maintenance with our predictive tools.',
       imgSrc: '/public/images/6a.png',
       reverse: true,
+    },
+
+    {
+      title: 'Smart Parcel Management using QR',
+      subtitle: 'QR Ka Kamal: Parcel Ka Hisaab Kitaab',
+      description:
+        'Ek scan se onboard aur offload ka pura hisaab, capacity planning ab super simple!',
+      imgSrc: '/public/images/7a.png',
+      reverse: false,
     },
   ];
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../Components/Navbar";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ companyName: "", password: "" });
@@ -32,7 +33,7 @@ const LoginForm = () => {
 
       setSuccessMessage("Login successful!");
       setUserCompanyName(data.companyName);
-      navigate("/dashboard1", { state: { companyName: data.companyName } });
+      navigate("/upload", { state: { companyName: data.companyName } });
     } catch (err) {
       setError(err.message);
     }
@@ -40,16 +41,28 @@ const LoginForm = () => {
 
   return (
     <div
-      className="mt-16 h-[60vh] w-[80vw] sm:h-[60vh] md:h-[70vh] lg:h-[120vh] xl:h-[130vh] bg-cover bg-center"
+    className="min-h-screen w-full flex flex-col items-center justify-center bg-cover bg-center"
+
       style={{
-        backgroundImage:
-          'url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Truck_map_concept.png/800px-Truck_map_concept.png")',
-        backgroundBlendMode: "darken",
-        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        backgroundImage: 'url("/public/images/Reg2.jpeg")',
+        backgroundBlendMode: "multiply", // Ensures both the image and color blend nicely
+        backgroundColor: "rgba(75, 65, 65, 0.8)", // Adds the overlay color
       }}
     >
+
+<Navbar/>
+
+<div
+            className="mt-16  w-[30vw]  bg-cover bg-center rounded-3xl"
+            style={{
+                backgroundImage:
+                    'url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Truck_map_concept.png/800px-Truck_map_concept.png")',
+                backgroundBlendMode: "darken",
+                backgroundColor: "rgba(0, 0, 0, 0.6)", // Dark overlay for better visibility of text
+            }}
+        >
       <form
-        className="w-full max-w-md bg-transparent p-6 rounded-md space-y-8"
+        className=" max-w-md bg-transparent p-6 rounded-md space-y-8 "
         onSubmit={handleSubmit}
       >
         <div className="space-y-2">
@@ -101,6 +114,7 @@ const LoginForm = () => {
           </Link>
         </div>
       </form>
+    </div>
     </div>
   );
 };

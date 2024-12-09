@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login2 = () => {
+const Login3 = () => {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -18,7 +18,7 @@ const Login2 = () => {
         setSuccessMessage("");
 
         try {
-            const response = await fetch("http://localhost:5000/api/login2", {
+            const response = await fetch("http://localhost:5000/api/login3", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
@@ -31,7 +31,7 @@ const Login2 = () => {
             }
 
             setSuccessMessage("Login successful!");
-            navigate("/dashboard2", { state: { companyName: data.companyName } });
+            navigate("/dashboard3", { state: { companyName: data.companyName } });
         } catch (err) {
             setError(err.message || "An error occurred. Please try again.");
         }
@@ -103,4 +103,4 @@ const Login2 = () => {
     );
 };
 
-export default Login2;
+export default Login3;

@@ -72,19 +72,14 @@ const Dashboard2 = () => {
   return (
     <div className="h-screen bg-gradient-to-b from-gray-200 to-blue-100 p-4">
       {/* Navbar */}
-      <Navbar
-        style={{
-          backgroundColor: 'darkblue',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        }}
-      />
+      <Navbar/>
 
       {/* Rectangle Div */}
       <div className="h-16  bg-[rgba(30,45,52,1)] flex items-center justify-start px-8 rounded-full mt-20 relative"
-       style={{ width: "1300px", left:"100px" }} // Decreased width
+       style={{ width: "1370px", left:"55px" }} // Decreased width
 >
   <div className="w-4 h-4 bg-[rgba(30,45,52,1)] rounded-full mr-10"></div>
-  <span className="text-white">Dashboard</span>
+  <span className="text-white">Welcome</span>
 
   {/* Ellipse 12 */}
   <div 
@@ -95,13 +90,13 @@ const Dashboard2 = () => {
 
 
       {/* Main Content */}
-      <div className="grid grid-cols-3 gap-4 mt-5">
+      <div className="grid grid-cols-3 mt-5">
       
         {/* 1st Div (Overview Metrics, Fuel Efficiency, Capacity Utilization) */}
-<div className="flex">
+<div className="flex ml-4">
   {/* Left side for Overview Metrics */}
   <div 
-  className="text-white p-4 rounded-lg mb-4 bg-[#3e4a56] w-48 h-[409px] relative left-12 top-0 gap-5 opacity-100 sm:w-40 sm:h-[350px] sm:left-8 md:w-48 md:h-[409px] md:left-12">
+  className="text-white p-4 rounded-3xl mb-4 bg-[#3e4a56] w-48 h-[409px] relative left-12 top-0 gap-5 opacity-100 sm:w-40 sm:h-[350px] sm:left-8 md:w-48 md:h-[409px] md:left-12">
 
 
     {/* Overlapping div */}
@@ -172,31 +167,38 @@ const Dashboard2 = () => {
           zIndex: 2,
         }}
       >
-        Fuel Efficiency
+       Receive Delivery 
       </div>
 
-      {/* Light div overlapping */}
-      <div
-        style={{
-          background: 'rgba(80, 96, 106, 1)',
-          width: '162px',
-          height: '26px',
-          top: '150px',
-          left: '20px',
-          gap: '0px',
-          borderRadius: '10px',
-          opacity: '1',
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '11px',
-          color: 'white',
-          zIndex: 2,
-        }}
-      >
-        Average fuel consumption
-      </div>
+      {/* Added Text Before "Show More" */}
+  <div
+    style={{
+     
+      width: '162px',
+      position: 'absolute',
+      
+    
+    textAlign:'center',
+     
+      fontSize: '12px', // Adjust font size for better readability
+      color: 'white',
+    
+    }}
+  >
+    <p>1. RK-DEL-MUM-12345</p>
+    <p>2. RK-DEL-MUM-12346</p>
+    <p>3. RK-DEL-MUM-12346</p>
+    <p>4. RK-DEL-MUM-12346</p>
+    <p>5. RK-DEL-MUM-12346</p>
+    <p>6. RK-DEL-MUM-12346</p>
+    <p>7. RK-DEL-MUM-12346</p>
+    <p>8. RK-DEL-MUM-12346</p>
+   
+   
+    
+  </div>
+
+ 
 
       {/* Light div overlapping */}
       <div
@@ -216,19 +218,20 @@ const Dashboard2 = () => {
           fontSize: '11px',
           color: 'white',
           zIndex: 2,
+          cursor:'pointer'
         }}
       >
-        Fuel Cost Trends
+        Show More 
       </div>
     </div>
 
     {/* Capacity Utilization */}
     <div
-      className="p-4 rounded-md"
+      className="p-4 rounded-md ml-2"
       style={{
         background: 'rgba(62, 74, 86, 1)',
         width: '200px',
-        height: '160px',
+        height: '158px',
         top: '430px',
         left: '280px',
         gap: '0px',
@@ -287,7 +290,7 @@ const Dashboard2 = () => {
 {/* Added New Div */}
 <div
   style={{
-    width: '414px',
+    width: '410px',
     height: '83px',
     top: '170px',
     right: '0px',
@@ -395,21 +398,24 @@ const Dashboard2 = () => {
       left: '230px', // Adjust position for overlap
     }}
   ></div>
-<div
-    style={{
-      position: 'absolute',
-      top: '60px', // Adjust this value to position text below the ellipse
-      left: '50px', // Keep the text aligned with the ellipse
-      color: 'rgba(255, 255, 255, 1)', // Text color
-      fontSize: '6px', // Font size as specified
-      fontWeight: '400', // Set font weight to 400
-      lineHeight: '7.26px', // Set line height
-      textAlign: 'center', // Center the text
-      width: '100%', // Ensure text width matches the container's width
-    }}
-  >
-   Alerts &  <br />  Notifications
-  </div>
+<Link
+      to="/schedule1" // Replace with the actual route you want to navigate to
+      style={{
+        position: "absolute",
+        top: "60px", // Adjust this value to position text below the ellipse
+        left: "50px", // Keep the text aligned with the ellipse
+        color: "rgba(255, 255, 255, 1)", // Text color
+        fontSize: "6px", // Font size as specified
+        fontWeight: "400", // Set font weight to 400
+        lineHeight: "7.26px", // Set line height
+        textAlign: "center", // Center the text
+        width: "100%", // Ensure text width matches the container's width
+        textDecoration: "none", // Remove underline from the link
+        cursor: "pointer", // Make it look like a button
+      }}
+    >
+      Alerts & <br /> Notifications
+    </Link>
 
   {/* Ellipse 4 */}
   <div
@@ -452,45 +458,15 @@ const Dashboard2 = () => {
   </div>
 </div>
 
-
-{/* 2nd Div (Map) */}
-<div>
-  <Live /> {/* The map component */}
-
-  {/* Checkpoint Information Section */}
-  <div
-    style={{
-      width: "101px",
-      height: "28px",
-      position: "absolute", // Overlay on top of the map
-      top: "650px",
-      left: "510px",
-      borderRadius: "5px",
-      mixBlendMode: "plus-darker", // Blend mode
-      backgroundColor: "rgba(71, 98, 117, 1)",
-      color: "white", // Ensure text is visible
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 1000, // Ensures the div appears above the map
-      flexDirection: "column",
-    }}
-  >
-    <div style={{ textAlign: "center", fontSize: "12px" }}>
-      {dashboardData.mapInfo.coordinates} 🚩
-      {dashboardData.mapInfo.checkpoints} Checkpoints
-    </div>
-  </div>
-
-  {/* Ellipse Navigation Buttons */}
-  <div style={{ position: "relative",  }}>
+{/* 2nd div */}
+<div style={{ position: "relative" }}>
     {/* Ellipse 1 - Previous */}
     <div
       style={{
         width: "50px",
         height: "50px",
         position: "absolute",
-        bottom: "350px",
+      
         left: "0px",
         borderRadius: "50%",
         mixBlendMode: "hard-light", // Blend mode
@@ -500,6 +476,7 @@ const Dashboard2 = () => {
         justifyContent: "center",
         alignItems: "center",
         cursor: "pointer",
+      
       }}
       onClick={() => handleNavigation("previous")} // Click handler for previous
     >
@@ -512,7 +489,7 @@ const Dashboard2 = () => {
         width: "50px",
         height: "50px",
         position: "absolute",
-        bottom: "350px",
+      
         left: "100px",
         borderRadius: "50%",
         mixBlendMode: "hard-light", // Blend mode
@@ -521,9 +498,12 @@ const Dashboard2 = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        cursor: "pointer",
+      
       }}
+      onClick={() => handleNavigation("previous")} // Click handler for previous
     >
-      1
+    1
     </div>
 
     {/* Ellipse 3 - Page 2 */}
@@ -532,48 +512,8 @@ const Dashboard2 = () => {
         width: "50px",
         height: "50px",
         position: "absolute",
-        bottom: "350px",
-        left: "202px",
-        borderRadius: "50%",
-        mixBlendMode: "hard-light", // Blend mode
-        backgroundColor: "rgba(54, 64, 74, 1)",
-        color: "white",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      2
-    </div>
-
-    {/* Ellipse 4 - Page 3 */}
-    <div
-      style={{
-        width: "50px",
-        height: "50px",
-        position: "absolute",
-        bottom: "350px",
-        left: "305px",
-        borderRadius: "50%",
-        mixBlendMode: "hard-light", // Blend mode
-        backgroundColor: "rgba(54, 64, 74, 1)",
-        color: "white",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      3
-    </div>
-
-    {/* Ellipse 4 - Next */}
-    <div
-      style={{
-        width: "50px",
-        height: "50px",
-        position: "absolute",
-        bottom: "350px",
-        left: "410px",
+      
+        left: "200px",
         borderRadius: "50%",
         mixBlendMode: "hard-light", // Blend mode
         backgroundColor: "rgba(54, 64, 74, 1)",
@@ -582,27 +522,86 @@ const Dashboard2 = () => {
         justifyContent: "center",
         alignItems: "center",
         cursor: "pointer",
+      
       }}
-      onClick={() => handleNavigation("next")} // Click handler for next
+      onClick={() => handleNavigation("previous")} // Click handler for previous
     >
-      &#8594;
+     3
     </div>
-  </div>
+
+    {/* Ellipse 4 - Page 3 */}
+    
+    <div
+      style={{
+        width: "50px",
+        height: "50px",
+        position: "absolute",
+      
+        left: "300px",
+        borderRadius: "50%",
+        mixBlendMode: "hard-light", // Blend mode
+        backgroundColor: "rgba(54, 64, 74, 1)",
+        color: "white",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        cursor: "pointer",
+      
+      }}
+      onClick={() => handleNavigation("previous")} // Click handler for previous
+    >
+     4
+    </div>
+    {/* Ellipse 5 - Next */}
+
+    <div
+      style={{
+        width: "50px",
+        height: "50px",
+        position: "absolute",
+      
+        left: "400px",
+        borderRadius: "50%",
+        mixBlendMode: "hard-light", // Blend mode
+        backgroundColor: "rgba(54, 64, 74, 1)",
+        color: "white",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        cursor: "pointer",
+      
+      }}
+      onClick={() => handleNavigation("previous")} // Click handler for previous
+    >
+     &#8594;
+    </div>
+    <div
+  className="w-[80] h-[20] "
+ 
+>
+  <div  style={{
+    
+    marginTop: "60px"}} >  <Live /> </div>
+ 
+</div>
+
+ 
+  
 </div>
 
 
-        {/* 3rd Div (Delivery Information and Delivery Package Information) */}
-        <div className="flex flex-col">
+         {/* 3rd Div (Delivery Information and Delivery Package Information) */}
+         <div className="flex flex-col">
          {/* Delivery Information */}
 <div
-  className="bg-gray-800 text-white p-4 rounded-lg mb-4"
+  className="bg-gray-800 text-white p-4 rounded-3xl "
   style={{
-    width: "466px",
-    height: "230px",
+    width: "424px",
+    height: "235px",
     top: "205px",
-    left: "932px",
-    gap: "0px",
-    borderRadius: "20px ", 
+    
+  
+ 
     background: "rgba(62, 74, 86, 1)", // Background color
      
   }}
@@ -610,10 +609,10 @@ const Dashboard2 = () => {
 <div
       style={{
         backgroundColor: 'rgba(42, 54, 68, 1)',
-        width: '466px',
+        width: '424px',
         height: '40px',
         bottom: '475px',
-        right: '41px',
+        right: '94px',
         gap: '0px',
         borderRadius: '20px 20px 0px 0px',
         opacity: '1',
@@ -632,10 +631,10 @@ const Dashboard2 = () => {
         zIndex: 2,
       }}
     >
-     Delivery Information
+    Delivery Information
     </div>
   
-    <p className="mt-12">📦Parcel ID/Tracking Number: {dashboardData.deliveryInfo.trackingNumber}</p>
+    <p className="mt-10">📦Parcel ID/Tracking Number: {dashboardData.deliveryInfo.trackingNumber}</p>
 <p className="mt-5">⛟  Pickup: {dashboardData.deliveryInfo.pickupLocation}</p>
 <p className="mt-5">📞 Driver/ Vehicle Assigned : {dashboardData.deliveryInfo.contactPerson}</p>
 <p className="mt-5">📍 Destination: <span>{dashboardData.deliveryInfo.destination}</span></p>
@@ -648,8 +647,8 @@ const Dashboard2 = () => {
           <div
   className="bg-gray-800 text-white p-4 rounded-lg mb-4"
   style={{
-    width: "466px",
-    height: "230px",
+    width: "424px",
+    height: "250px",
     top: "20px",
     left: "2px",
     gap: "0px",
@@ -662,9 +661,9 @@ const Dashboard2 = () => {
 <div
       style={{
         backgroundColor: 'rgba(42, 54, 68, 1)',
-        width: '466px',
+        width: '424px',
         height: '40px',
-        bottom: '190px',
+        top:'0px',
         right: '0px',
         gap: '0px',
         borderRadius: '20px 20px 0px 0px',
@@ -684,7 +683,7 @@ const Dashboard2 = () => {
         zIndex: 2,
       }}
     >
-     Delivery Package Information
+  Delivery Package Information
     </div>
     <div
   style={{
@@ -707,10 +706,10 @@ const Dashboard2 = () => {
 >
   {/* First Column */}
   <div>
-    <span>Number of Entities:</span>
+    <span style={{ fontSize: '14px' }}>Number of Entities:</span>
     <div
       style={{
-        fontSize: "8px",
+        fontSize: "12px",
         fontWeight: "normal",
         marginTop: "5px",
       }}
@@ -722,10 +721,10 @@ const Dashboard2 = () => {
 
   {/* Second Column */}
   <div>
-    <span>Parcel Weight:</span>
+    <span style={{ fontSize: '14px' }}>Parcel Weight:</span>
     <div
       style={{
-        fontSize: "8px",
+        fontSize: "12px",
         fontWeight: "normal",
         marginTop: "5px",
       }}
@@ -737,10 +736,10 @@ const Dashboard2 = () => {
 
   {/* Third Column */}
   <div>
-    <span>Parcel Volume:</span>
+    <span style={{ fontSize: '14px' }}>Parcel Volume:</span>
     <div
       style={{
-        fontSize: "8px",
+        fontSize: "12px",
         fontWeight: "normal",
         marginTop: "5px",
       }}

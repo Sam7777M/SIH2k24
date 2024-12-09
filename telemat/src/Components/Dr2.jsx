@@ -7,13 +7,11 @@ const Dr2 = () => {
     
     return (
         <div
-            className="mt-16 h-[60vh] w-[80vw] sm:h-[60vh] md:h-[70vh] lg:h-[120vh] xl:h-[130vh] bg-cover bg-center"
-            style={{
-                backgroundImage:
-                    'url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Truck_map_concept.png/800px-Truck_map_concept.png")',
-                backgroundBlendMode: "darken",
-                backgroundColor: "rgba(0, 0, 0, 0.6)", // Dark overlay for better visibility of text
-            }}
+        className="mt-16 h-[60vh] w-[80vw] sm:h-[60vh] md:h-[70vh] lg:h-[95vh]  bg-cover bg-center rounded-3xl"
+        style={{
+          backgroundBlendMode: "darken",
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+        }}
         >
             <form className="w-full max-w-md bg-transparent p-6 rounded-md space-y-8">
                 {/* Office Contact Number */}
@@ -25,7 +23,7 @@ const Dr2 = () => {
                         type="text"
                         id="cno"
                         placeholder="Enter the office contact number (e.g., 022-12345678)"
-                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
                     />
                 </div>
 
@@ -39,7 +37,7 @@ const Dr2 = () => {
                         id="email"
                         
                         placeholder="Enter the official email ID (e.g., example@dop.gov.in)"
-                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
                     />
                 </div>
 
@@ -53,7 +51,7 @@ const Dr2 = () => {
                         id="point"
                         
                         placeholder="Enter the designation (e.g., Assistant Postmaster)"
-                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
                     />
                 </div>
 
@@ -67,17 +65,19 @@ const Dr2 = () => {
                         id="mobno"
                        
                         placeholder="Enter the mobile number (e.g., 9876543210)"
-                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
                     />
                 </div>
 
                 {/* Error and Success Messages */}
                
-                {/* Submit Button */}
-                <div className="flex justify-center mt-6">
+                
+            </form>
+             {/* Submit Button */}
+             <div className="flex justify-center mt-6">
                 <Link
                         to="/reg12" // Replace with your target route
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-md w-full max-w-xs text-center block"
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 w-full max-w-xs text-center block rounded-3xl"
                     >
                         NEXT
                     </Link>
@@ -92,7 +92,6 @@ const Dr2 = () => {
                         I have an account - Sign In
                     </Link>
                 </div>
-            </form>
         </div>
     );
 };

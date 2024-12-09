@@ -42,7 +42,7 @@ const FleetCard = ({ fleet }) => {
     );
 };
 
-const ChoosePartner = () => {
+const ChoosePartnert = () => {
     const [fleetData, setFleetData] = useState([]);
     const [error, setError] = useState(null);
 
@@ -75,4 +75,4 @@ const ChoosePartner = () => {
     );
 };
 
-export default ChoosePartner;
+export default ChoosePartnert;
