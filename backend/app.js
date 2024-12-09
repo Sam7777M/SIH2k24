@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5001"], // Allow multiple origins
+    origin: ["http://localhost:5173", "http://localhost:5000"], // Allow multiple origins
     methods: ["GET", "POST"], // Specify allowed methods
   },
 });
@@ -1175,7 +1175,7 @@ app.get("/api/partner", async (req, res) => {
 app.use((req, res) => res.status(404).json({ message: "Routesss not found" }));
 
 // **Start Server**
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
