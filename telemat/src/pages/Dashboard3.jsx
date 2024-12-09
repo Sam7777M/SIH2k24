@@ -43,7 +43,7 @@ const Dashboard3 = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/save-parcel');
+        const response = await fetch('https://sih-2k24-seven.vercel.app/api/save-parcel');
         if (response.ok) {
           const data = await response.json();
 

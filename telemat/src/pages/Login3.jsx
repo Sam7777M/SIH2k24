@@ -18,7 +18,7 @@ const Login3 = () => {
         setSuccessMessage("");
 
         try {
-            const response = await fetch("http://localhost:5000/api/login3", {
+            const response = await fetch("https://sih-2k24-seven.vercel.app/api/login3", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

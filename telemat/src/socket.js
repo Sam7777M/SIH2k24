@@ -35,5 +35,5 @@ io.on("connection", (socket) => {
 
 
 server.listen(5000, () => {
-  console.log("Server is running on http://localhost:5000");
+  console.log("Server is running on https://sih-2k24-seven.vercel.app");
 });
