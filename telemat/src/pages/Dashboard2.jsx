@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import Live from "./Live"; // Assuming you have a Navbar component
 import { Link } from "react-router-dom";
+import { jsPDF } from "jspdf"
 
 const Dashboard2 = () => {
   // State to store fetched data
@@ -68,6 +69,28 @@ const Dashboard2 = () => {
 
     fetchData();
   }, []);
+  
+  const handleDownloadPDF = async () => {
+    try {
+      // Fetch data from the database through API
+      // const response = await fetch.get("https://api.example.com/population");
+      const totalPopulation = 200;
+      // console.log("Total population :" + totalPopulation)
+
+      // Create a PDF document
+      const pdf = new jsPDF();
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Population Report", 10, 10);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`Total Population: ${totalPopulation}`, 10, 30);
+
+      // Save the PDF to the user's device
+      pdf.save("population_report.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("An error occurred while generating the PDF. Please try again.");
+    }
+  };
 
   return (
     <div className="h-screen bg-gradient-to-b from-gray-200 to-blue-100 p-4">
@@ -342,6 +365,7 @@ const Dashboard2 = () => {
 
                 {/* Ellipse 2 */}
                 <div
+                onClick={() => handleDownloadPDF()}
                   style={{
                     position: "absolute",
                     width: "50px",
