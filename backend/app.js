@@ -852,7 +852,7 @@ app.post('/api/messages', async (req, res) => {
 
 //qr save
 
-mongoose
+{/*mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -896,7 +896,7 @@ app.post("/api/handleQrData", async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 }); 
-
+*/}
 
 
 
@@ -1103,7 +1103,7 @@ app.post("/api/partner", async (req, res) => {
 
 //message function
 
-mongoose.connect(process.env.MONGO_URI, {
+{/*mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -1119,7 +1119,7 @@ const messageSchema = new mongoose.Schema({
 });
 
 const Message = mongoose.model('Message', messageSchema);
-
+*/}
 // Routes
 
 // Endpoint to send a message
@@ -1278,7 +1278,7 @@ mongoose
 
   //again tryingg
 
-  mongoose
+  {/*mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -1312,7 +1312,7 @@ mongoose
   
     res.status(200).send("Location received");
   });
-  
+  */}
   // Socket.IO to track connected users
   io.on("connection", (socket) => {
     console.log("A user connected");
@@ -1327,7 +1327,7 @@ mongoose
   });
   //schedule hoga process
 
-  mongoose
+  {/*mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Error connecting to MongoDB:", err));
@@ -1380,6 +1380,7 @@ app.get("/api/schedule", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch schedules", error: err.message });
   }
 });
+*/}
 // sensor and humidity
 {/*app.post('/ res) => {
   console.log(req.body);
