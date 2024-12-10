@@ -10,6 +10,7 @@ const multer = require("multer");
 const path = require("path");
 const { Schema } = mongoose;
 
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -295,7 +296,7 @@ app.use((err, req, res, next) => {
 //login for dop
 
 
-app.post("/api/auth/login2", async (req, res) => {
+app.post("/api/login2", async (req, res) => {
   const { emailid, password } = req.body;
 
   if (!emailid || !password) {
@@ -348,7 +349,7 @@ const newUserSchema = new mongoose.Schema({
 const NewUser = mongoose.model("NewUser", newUserSchema);
 
 // Registration route
-app.post("/api/auth/reg", async (req, res) => {
+app.post("/api/reg", async (req, res) => {
   const { name, email, phone, companyName, password, confirmPassword } = req.body;
 
   // Validate all fields
@@ -446,7 +447,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 app.post("/api/login2", async (req, res) => {
     const { email, password } = req.body;
-
+    
     if (!email || !password) {
         return res.status(400).json({ message: "Email and password are required" });
     }
@@ -851,7 +852,7 @@ app.post('/api/messages', async (req, res) => {
 
 //qr save
 
-mongoose
+{/*mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -895,7 +896,7 @@ app.post("/api/handleQrData", async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 }); 
-
+*/}
 
 
 
@@ -1064,7 +1065,340 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Define Schema and Model
+{/*
 const FormDataSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    city: { type: String, required: true },
+    phone: { type: String, required: true },
+    companyName: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    truck: { type: String, required: true },
+    preferredFrom: { type: String, required: true },
+    preferredTo: { type: String, required: true },
+    preferredCost: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+const FormData = mongoose.model("FormData", FormDataSchema);
+
+// Routes
+
+// Registration
+app.post("/api/partner", async (req, res) => {
+  try {
+    const { companyName, password, ...otherDetails } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newData = new FormData({ ...otherDetails, companyName, password: hashedPassword });
+    const savedData = await newData.save();
+    res.status(201).json({ message: "Registration successful!", userId: savedData._id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+*/}
+
+
+//message function
+
+{/*mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("MongoDB connected"))
+.catch((err) => console.error("MongoDB connection error:", err));
+
+// Message Schema & Model
+const messageSchema = new mongoose.Schema({
+  partnerId: String,       // For identifying the partner (fleet owner)
+  message: String,         // Message content
+  recipient: String,       // For specifying the recipient (e.g., DOP Admin)
+  status: { type: String, default: "Pending" }, // Status of the message
+});
+
+const Message = mongoose.model('Message', messageSchema);
+*/}
+// Routes
+
+// Endpoint to send a message
+app.post('/api/sendMessage', async (req, res) => {
+  const { partnerId, message, recipient } = req.body;
+
+  try {
+    const newMessage = await Message.create({ partnerId, message, recipient });
+    res.status(201).json(newMessage);
+  } catch (error) {
+    console.error("Error while sending message:", error.message);
+    res.status(500).json({ error: 'Failed to send message' });
+  }
+});
+
+// Endpoint to get all messages
+app.get('/api/messages', async (req, res) => {
+  try {
+    const messages = await Message.find();
+    res.json(messages);
+  } catch (error) {
+    console.error("Error while fetching messages:", error.message);
+    res.status(500).json({ error: 'Failed to fetch messages' });
+  }
+});
+
+// Endpoint to update the status of a message
+app.patch('/api/messages/:id', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updatedMessage = await Message.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true } // Return the updated document
+    );
+    res.json(updatedMessage);
+  } catch (error) {
+    console.error("Error while updating message status:", error.message);
+    res.status(500).json({ error: 'Failed to update message status' });
+  }
+});
+
+// Endpoint to handle forwarding a message to a recipient (e.g., DOP Admin)
+app.post('/api/messages', async (req, res) => {
+  const { message, recipient } = req.body;
+
+  console.log("Received message:", { message, recipient }); // Log the received message
+
+  try {
+    const newMessage = new Message({ message, recipient });
+    await newMessage.save();
+    res.status(201).json(newMessage);
+  } catch (error) {
+    console.error("Error while saving message:", error.message);
+    res.status(500).json({ error: "Failed to forward message" });
+  }
+});
+
+
+//qr save
+
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+// Define Schema and Model
+const qrDataSchema = new mongoose.Schema({
+  qrrData: { type: String, required: true, unique: true },
+});
+
+const QrData = mongoose.model("QrData", qrDataSchema);
+
+// API Endpoint
+app.post("/api/handleQrData", async (req, res) => {
+  const { qrrData } = req.body;
+  console.log("Received QR data:", qrrData);
+
+  if (!qrrData) {
+    console.error("QR data is missing.");
+    return res.status(400).json({ message: "QR data is required." });
+  }
+
+  try {
+    const existingData = await QrData.findOne({ qrrData });
+    console.log("Existing Data:", existingData);
+
+    if (existingData) {
+      await QrData.deleteOne({ qrrData });
+      console.log("Deleted existing QR data.");
+      return res.json({ message: "QR data deleted successfully." });
+    } else {
+      const newQrData = new QrData({ qrrData });
+      await newQrData.save();
+      console.log("Saved new QR data.");
+      return res.json({ message: "QR data saved successfully." });
+    }
+  } catch (error) {
+    console.error("Error handling QR data:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+}); 
+
+
+
+
+
+
+
+//socket
+
+app.get("/", (req, res) => {
+  res.send("WebSocket Server Running");
+});
+
+// Handle incoming location updates from clients
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  socket.on("locationUpdate", (location) => {
+    console.log("Location Update:", location);
+    // Broadcast the location update to all connected clients
+    socket.broadcast.emit("newLocation", location);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+});
+
+
+//bhiya location
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+
+  app.post('/api/update-location', (req, res) => {
+    const { latitude, longitude } = req.body;
+    if (!latitude || !longitude) {
+      return res.status(400).json({ message: 'Latitude and longitude are required' });
+    }
+    console.log(`Received location: Lat ${latitude}, Lng ${longitude}`);
+    // Here, you can save the location to a database or perform other actions
+    res.status(200).json({ message: 'Location updated successfully' });
+  });
+
+  //again tryingg
+
+  {/*mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+  const coordinateSchema = new mongoose.Schema({
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
+    timestamp: { type: Date, default: Date.now },
+  });
+  
+  const Coordinate = mongoose.model("Coordinate", coordinateSchema);
+  
+
+  let userLocations = {};
+
+  // POST endpoint to save coordinates
+  app.post("/api/coordinates", (req, res) => {
+    const { lat, lng, name } = req.body;
+    if (!lat || !lng || !name) {
+      return res.status(400).send("Invalid data");
+    }
+  
+    const userId = req.headers["user-id"] || "default-user";
+    userLocations[userId] = { lat, lng, name };
+  
+    // Broadcast location to all clients
+    io.emit("receive-location", { id: userId, name, latitude: lat, longitude: lng });
+  
+    res.status(200).send("Location received");
+  });
+  */}
+  // Socket.IO to track connected users
+  io.on("connection", (socket) => {
+    console.log("A user connected");
+  
+    // Emit connected users count
+    io.emit("connected-users", io.engine.clientsCount);
+  
+    socket.on("disconnect", () => {
+      console.log("A user disconnected");
+      io.emit("connected-users", io.engine.clientsCount);
+    });
+  });
+  //schedule hoga process
+
+  {/*mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Error connecting to MongoDB:", err));
+
+// Define Schedule schema
+const scheduleSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  entities: { type: Number, required: true },
+  weight: { type: Number, required: true },
+  destination: { type: String, required: true },
+  pickupDate: { type: Date, required: true },
+  dropDate: { type: Date, required: true },
+  uniqueId: { type: String, unique: true, required: true },
+});
+
+// Schedule model
+const Schedule = mongoose.model("Schedule", scheduleSchema);
+
+// Routes
+app.post("/api/schedule", async (req, res) => {
+  const { name, entities, weight, destination, pickupDate, dropDate, uniqueId } = req.body;
+
+  try {
+    // Save schedule data to the database
+    const newSchedule = new Schedule({
+      name,
+      entities,
+      weight,
+      destination,
+      pickupDate,
+      dropDate,
+      uniqueId,
+    });
+
+    await newSchedule.save();
+    res.status(201).json({ message: "Schedule created successfully", data: newSchedule });
+  } catch (err) {
+    console.error("Error saving schedule:", err);
+    res.status(500).json({ message: "Failed to create schedule", error: err.message });
+  }
+});
+
+// Route to fetch all schedules
+app.get("/api/schedule", async (req, res) => {
+  try {
+    const schedules = await Schedule.find();
+    res.status(200).json(schedules);
+  } catch (err) {
+    console.error("Error fetching schedules:", err);
+    res.status(500).json({ message: "Failed to fetch schedules", error: err.message });
+  }
+});
+*/}
+// sensor and humidity
+{/*app.post('/ res) => {
+  console.log(req.body);
+  res.status(200).send('Data received');
+});
+*/}
+/// again dashboard
+
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+// Define Schema and Model
+{/*const FormDataSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     city: { type: String, required: true },
@@ -1155,7 +1489,7 @@ app.get("/api/partner/:id", async (req, res) => {
 });
 
 // Get all users
-app.get("/api/partner", async (req, res) => {
+{/*app.get("/api/partner", async (req, res) => {
   try {
     // Get all users
     const users = await FormData.find();
@@ -1165,7 +1499,26 @@ app.get("/api/partner", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 }); 
+*/}
 
+//payment
+
+const stripe = require('stripe')('sk_test_51PAxNDSArgUNjTehyY0RX1YMCppGPLCxi7mALxlT8KO8Zi0KfdvrUoYgu29NfJIteYOZrj8NUKVAhEZ3gX9kM0Mi00wGCZMtx8');
+
+app.post('/api/create-payment-intent', async (req, res) => {
+    const { amount } = req.body;
+    try {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amount, // Amount in cents
+            currency: 'usd',
+        });
+        res.send({
+            clientSecret: paymentIntent.client_secret,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 

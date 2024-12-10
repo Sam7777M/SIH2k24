@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -8,7 +9,7 @@ const UserTypeSelection = () => {
         <div
             className="min-h-screen w-full flex flex-col items-center justify-center bg-cover bg-center"
             style={{
-                backgroundImage: 'url("public/images/Reg2.jpeg")',
+                backgroundImage: 'url("/public/images/Reg2.jpeg")',
                 backgroundBlendMode: "multiply", // Ensures both the image and color blend nicely
                 backgroundColor: "rgba(75, 65, 65, 0.8)", // Adds the overlay color
             }}

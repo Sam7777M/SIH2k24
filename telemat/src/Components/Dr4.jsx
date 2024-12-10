@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -138,21 +138,22 @@ const Dr4 = () => {
         {error && <p className="text-red-500 text-sm">{error}</p>}
         {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
 
-       
-      </form>
-      <button
+        <button
           type="submit"
-         className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-3xl w-full max-w-xs text-center block"
+          className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-3xl w-full max-w-xs text-center block"
         >
           SUBMIT
         </button>
+      </form>
 
-        <p className="mt-4 text-white text-center">
+      <div className="flex flex-col justify-center items-center space-y-4">
+        <p className="text-white text-center">
           Already have an account?{" "}
           <Link to="/login2" className="text-blue-400">
             Login
           </Link>
         </p>
+      </div>
     </div>
   );
 };

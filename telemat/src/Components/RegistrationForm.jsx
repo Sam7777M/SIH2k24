@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
@@ -79,8 +79,7 @@ const RegisterForm = () => {
               value={formData[field]}
               onChange={handleChange}
               placeholder={`Enter your ${field}`}
-              className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
-
+              className="w-full p-3 text-white bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
               required
             />
           </div>
@@ -106,8 +105,7 @@ const RegisterForm = () => {
                   ? "confirmation password"
                   : "password"
               }`}
-              className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
-
+              className="w-full p-3 text-white bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
               required
             />
           </div>
@@ -116,9 +114,7 @@ const RegisterForm = () => {
         {error && <p className="text-red-500 text-sm">{error}</p>}
         {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
 
-      
-      </form>
-      <div className="flex justify-center mt-6 ">
+        <div className="flex justify-center mt-6">
           <button
             type="submit"
             className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-3xl w-full max-w-xs"
@@ -126,15 +122,16 @@ const RegisterForm = () => {
             Submit
           </button>
         </div>
+      </form>
 
-        <div className="flex justify-center mt-4">
-          <Link
-            to="/login3"
-            className="text-white underline text-sm hover:text-orange-500"
-          >
-            I have an account - Sign In
-          </Link>
-        </div>
+      <div className="flex justify-center mt-4">
+        <Link
+          to="/login3"
+          className="text-white underline text-sm hover:text-orange-500"
+        >
+          I have an account - Sign In
+        </Link>
+      </div>
     </div>
   );
 };

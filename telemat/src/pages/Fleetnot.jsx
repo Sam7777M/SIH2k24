@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+
+
+import { useState, useEffect } from "react";
+import Navbar from "../Components/Navbar";
 
 const Fleetnot = () => {
   const [messages, setMessages] = useState([]);
@@ -61,10 +64,15 @@ const Fleetnot = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-xl font-bold">Partner Dashboard</h1>
+    <div className="min-h-screen bg-gray-100 p-24">
+      <Navbar />
+      
+      <h1 className="text-5xl font-bold text-center text-black">
+   Partner Dashboard
+</h1>
+
       {messages.map((message) => (
-        <div key={message._id} className="bg-white p-4 rounded shadow mb-4">
+        <div key={message._id} className="bg-white p-4 rounded-2xl shadow-lg mb-6 mt-6 text-black text-xl">
           <p>{message.message}</p>
           <div className="flex space-x-4 mt-2">
             <button

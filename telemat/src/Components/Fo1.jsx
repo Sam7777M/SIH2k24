@@ -127,7 +127,7 @@ const Fo1 = () => {
                 {/* Sign In Link */}
                 <div className="flex justify-center mt-4">
                     <Link
-                        to="/login"
+                        to="/login2"
                         className="text-white underline text-sm hover:text-orange-500"
                     >
                         I have an account - Sign In
