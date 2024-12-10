@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios"; // Map placeholder, assuming integration
 import Live from "./Live";
 
@@ -11,7 +11,7 @@ const Dashboard = () => {
     // Fetch data from backend
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/partner");
+        const response = await axios.get("https://sih-2k24-seven.vercel.app/api/partner");
         setData(response.data);
         setLoading(false);
       } catch (error) {

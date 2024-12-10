@@ -1,5 +1,4 @@
 // src/App.jsx
-import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -7,7 +6,6 @@ import { QrCodeProvider } from "./pages/QrCodeContext";
 
 // Import your pages and components
 import Aopt from "./pages/Aopt";
-import SharedRoute from "./Components/SharedRoute";
 import Live from "./pages/Live";
 import Monitor from "./pages/Monitor";
 import Dashboard1 from "./pages/Dashboard1";
@@ -20,14 +18,11 @@ import UserTypeSelection from "./pages/UserTypeSelection";
 import LoginForm from "./pages/LoginForm";
 import Schedule from "./pages/Schedule";
 import InQr from "./pages/InQr";
-import ScheduleReg from "./components/ScheduleReg";
-import Qreg from "./components/Qreg";
+import ScheduleReg from "./Components/ScheduleReg";
+import Qreg from "./Components/Qreg";
 import Dashboard2 from "./pages/Dashboard2";
 import Dashboard3 from "./pages/Dashboard3";
 import Dr1 from "./Components/Dr1";
-import Dr2 from "./Components/Dr2";
-import Dr3 from "./Components/Dr3";
-import Dr4 from "./Components/Dr4";
 import Reg11 from "./pages/Reg11";
 import Reg12 from "./pages/Reg12";
 import Reg13 from "./pages/Reg13";
@@ -49,10 +44,8 @@ import Map from "./pages/Map";
 import Login3 from "./pages/Login3";
 import Driver from "./pages/Driver";
 import Login4 from "./pages/Login4";
-import PartnerDataPage from "./pages/ShowDataPage";
 import ShowDataPage from "./pages/ShowDataPage";
 import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Live2 from "./pages/Live2";
 import Schedulet from "./pages/Shdeulet";

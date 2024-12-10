@@ -72,7 +72,7 @@ const Fo2 = () => {
     });
 
     try {
-      const response = await fetch("http://localhost:5000/api/documents", {
+      const response = await fetch("https://sih-2k24-seven.vercel.app/api/documents", {
         method: "POST",
         body: data,
       });

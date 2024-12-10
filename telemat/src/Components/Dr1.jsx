@@ -33,7 +33,7 @@ const Dr1 = () => {
 
         try {
             // Send POST request to backend to register the user
-            const response = await axios.post('http://localhost:5000/api/register-office', formData);  // Adjust the endpoint as needed
+            const response = await axios.post('https://sih-2k24-seven.vercel.app/api/register-office', formData);  // Adjust the endpoint as needed
             if (response.data.success) {
                 setSuccessMessage('Registration successful!');
                 setError('');

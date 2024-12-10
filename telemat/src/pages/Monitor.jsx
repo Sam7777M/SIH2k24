@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:5000"); // Update with your server address
+const socket = io("https://sih-2k24-seven.vercel.app"); // Update with your server address
 
 const Monitor = () => {
   const [locations, setLocations] = useState([]);

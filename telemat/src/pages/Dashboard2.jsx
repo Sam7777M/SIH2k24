@@ -1,8 +1,4 @@
-
-
-
-
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../Components/Navbar';
 import Live from './Live'; // Assuming you have a Navbar component
 import { Link } from 'react-router-dom';
@@ -41,13 +37,12 @@ const Dashboard2 = () => {
     },
   });
 
-  const [loading , setLoading] = useState(true);
 
   // Fetch data from the backend
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/save-parcel');
+        const response = await fetch('https://sih-2k24-seven.vercel.app/api/save-parcel');
         if (response.ok) {
           const data = await response.json();
 
@@ -66,7 +61,7 @@ const Dashboard2 = () => {
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
-        setLoading(false);
+        console.log("Finally executed")
       }
     };
 
@@ -81,7 +76,7 @@ const Dashboard2 = () => {
     {/* Rectangle Div */}
     <div className="h-16  bg-[rgba(30,45,52,1)] flex items-center justify-start px-8 rounded-full mt-20 relative"
      style={{ width: "1370px", left:"55px" }} // Decreased width
->
+> 
 <div className="w-4 h-4 bg-[rgba(30,45,52,1)] rounded-full mr-10"></div>
 <span className="text-white">Welcome</span>
 
@@ -348,8 +343,8 @@ style={{
   alignItems: 'center', // Vertically center the ellipses
   padding: '0 10px', // Optional padding to add spacing around the div
 }}
->
-{/* Ellipse 1 */}
+> 
+{/*Ellipse 1 */}
 <Link
 to="/schedule1" // The link you want to navigate to
 style={{
@@ -368,8 +363,8 @@ style={{
   left: '40px', // Position first ellipse on the left
   display: 'block', // Ensure the link is a block-level element so that it occupies the area of the div
 }}
->
-{/* Optionally, you can add content or a tooltip here */}
+> 
+{/*Optionally, you can add content or a tooltip here */}
 </Link>
  {/* Schedule a Delivery text below Ellipse 1 */}
  <div
@@ -522,7 +517,7 @@ style={{
       cursor: "pointer",
     
     }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
+    // onClick={() => handleNavigation("previous")} // Click handler for previous
   >
     &#8592;
   </div>
@@ -545,7 +540,7 @@ style={{
       cursor: "pointer",
     
     }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
+    // onClick={() => handleNavigation("previous")} // Click handler for previous
   >
   1
   </div>
@@ -568,7 +563,7 @@ style={{
       cursor: "pointer",
     
     }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
+    // onClick={() => handleNavigation("previous")} // Click handler for previous
   >
    3
   </div>
@@ -592,7 +587,7 @@ style={{
       cursor: "pointer",
     
     }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
+    // onClick={() => handleNavigation("previous")} // Click handler for previous
   >
    4
   </div>
@@ -615,15 +610,15 @@ style={{
       cursor: "pointer",
     
     }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
+    // onClick={() => handleNavigation("previous")} // Click handler for previous
   >
    &#8594;
   </div>
   <div
 className="w-[80] h-[20] "
 
->
-<div  style={{
+> 
+<div style={{
   
   marginTop: "60px"}} >  <Live /> </div>
 
@@ -649,7 +644,7 @@ style={{
   background: "rgba(62, 74, 86, 1)", // Background color
    
 }}
->
+> 
 <div
     style={{
       backgroundColor: 'rgba(42, 54, 68, 1)',
@@ -701,7 +696,7 @@ style={{
   background: "rgba(62, 74, 86, 1)", // Background color
    
 }}
->
+> 
 <div
     style={{
       backgroundColor: 'rgba(42, 54, 68, 1)',
@@ -747,8 +742,8 @@ style={{
   left: "0px",
   width: "100%",
 }}
->
-{/* First Column */}
+> 
+{/*First Column */}
 <div>
   <span style={{ fontSize: '14px' }}>Number of Entities:</span>
   <div

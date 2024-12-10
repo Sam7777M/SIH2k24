@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -71,10 +71,7 @@ const Dr4 = () => {
 
     try {
       // Post form data to the backend
-      const response = await axios.post(
-        "http://localhost:5000/api/registers",
-        formData
-      );
+      const response = await axios.post("https://sih-2k24-seven.vercel.app/api/registers", formData);
 
       if (response.status === 201) {
         setSuccessMessage("User registered successfully!");

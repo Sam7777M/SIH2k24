@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import io from "socket.io-client";
 import * as turf from "@turf/turf";
 
 // Establish the socket connection
-const socket = io("http://localhost:5000");
+const socket = io("https://sih-2k24-seven.vercel.app");
 
 // Component to select the geofence center by clicking on the map
 const GeofenceSelector = ({ setGeofenceCenter }) => {

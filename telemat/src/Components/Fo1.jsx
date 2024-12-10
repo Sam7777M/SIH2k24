@@ -32,7 +32,7 @@ const Fo1 = () => {
         }
         setError("");
         try {
-            const response = await fetch("http://localhost:5000/api/partner", {
+            const response = await fetch("https://sih-2k24-seven.vercel.app/api/partner", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -70,10 +70,10 @@ const Fo1 = () => {
 
     return (
         <div
-            className="mt-16 h-auto w-[80vw] sm:h-auto md:h-auto lg:h-auto xl:h-auto bg-cover bg-center"
+        className="mt-16 h-[130vh] w-[80vw] bg-cover bg-center rounded-xl flex justify-center"
+
             style={{
-                backgroundImage:
-                    'url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Truck_map_concept.png/800px-Truck_map_concept.png")',
+               
                 backgroundBlendMode: "darken",
                 backgroundColor: "rgba(0, 0, 0, 0.6)",
             }}

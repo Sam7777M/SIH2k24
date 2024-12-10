@@ -83,6 +83,7 @@ const UserTypeSelection = () => {
  
 
         </div>
+
     );
 };
 

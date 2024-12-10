@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://sih-2k24-seven.vercel.app/");
 
 // A helper component to update the map's center
 const MapUpdater = ({ position }) => {

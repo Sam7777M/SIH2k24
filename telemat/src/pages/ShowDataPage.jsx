@@ -11,7 +11,7 @@ const ShowDataPage = () => {
     // Check if `id` is valid before making the request
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/partner/${id}`);
+        const response = await fetch(`https://sih-2k24-seven.vercel.app/api/partner/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }

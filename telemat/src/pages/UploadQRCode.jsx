@@ -1,5 +1,4 @@
 
-
 import React, { useState } from "react";
 import { BrowserQRCodeReader } from "@zxing/browser";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +8,9 @@ const UploadQRCode = () => {
   const [fileError, setFileError] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [userData, setUserData] = useState(null); // Store the user details
+  const [totalWeight, setTotalWeight] = useState(0); // Track the total weight
+  const [capacity, setCapacity] = useState(20); // Max truck capacity (20kg)
   const navigate = useNavigate();
 
   const handleFileChange = (event) => {
@@ -46,8 +48,8 @@ const UploadQRCode = () => {
 
         setQrData(result.text);
         localStorage.setItem("qrrData", result.text);
-
-        const response = await fetch("http://localhost:5000/api/handleQrData", {
+    
+        const response = await fetch("https://sih-2k24-seven.vercel.app/api/handleQrData", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -58,6 +60,24 @@ const UploadQRCode = () => {
         const data = await response.json();
         if (response.ok) {
           setResponseMessage(data.message);
+          // Save user details
+          setUserData({
+            name: data.name,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            vehicleNumber: data.vehicleNumber,
+            truckCapacity: data.truckCapacity,
+          });
+
+          // Check if the truck capacity is full
+          if (totalWeight + data.weight > capacity) {
+            setResponseMessage("Truck capacity is full. Cannot add more weight.");
+          } else {
+            // Update total weight if not full
+            setTotalWeight((prevWeight) => prevWeight + data.weight);
+            setResponseMessage(`Added weight: ${data.weight}kg. Current total: ${totalWeight + data.weight}kg.`);
+          }
+
           navigate("/aopt");
         } else {
           setResponseMessage(`Error: ${data.message || "Unexpected server error."}`);
@@ -74,73 +94,49 @@ const UploadQRCode = () => {
   };
 
   return (
-    <div
-      className="flex items-center justify-center min-h-screen"
-      style={{
-        backgroundImage: `url("/images/ScheduleReg.jpeg")`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundBlendMode: "overlay",
-        backgroundColor: "rgba(0, 51, 102, 0.7)", // Overlay effect
-      }}
-    >
-       <div
-        className="p-8  shadow-lg"
-        style={{
-         
-          backgroundColor: "rgba(0, 0, 0, 0.7)", // Dark overlay for inner div
-          width: "60%", // Increased size
-          padding: "40px", // Comfortable padding
-          borderRadius:"30px"
-        }}
-      >
-        {/* Title */}
-        <h1
-          className="text-4xl font-bold text-white mb-8 text-center"
-          style={{ fontFamily: "'Poppins', sans-serif" }}
-        >
-          Upload QR Code
-        </h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Upload QR Code</h1>
+      <form>
+        <div className="mb-4">
+          <label htmlFor="qrFile" className="block text-lg font-medium mb-2">
+            Upload QR Code Image
+          </label>
+          <input
+            type="file"
+            id="qrFile"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="block w-full text-sm text-gray-700"
+          />
+          {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
+        </div>
 
-        {/* Form */}
-        <form>
-          <div className="mb-6">
-            <label
-              htmlFor="qrFile"
-              className="block text-lg font-medium text-white mb-4"
-            >
-              Upload QR Code Image
-            </label>
-            <input
-              type="file"
-              id="qrFile"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="block w-full p-3 text-sm text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            />
-            {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
+        {isLoading && <p className="text-blue-500">Loading...</p>}
+        {responseMessage && (
+          <div
+            className={`p-4 rounded shadow ${
+              responseMessage.includes("Error") ? "bg-red-100" : "bg-green-100"
+            }`}
+          >
+            <h2 className="font-semibold">Response:</h2>
+            <p className="text-sm">{responseMessage}</p>
           </div>
+        )}
 
-          {isLoading && (
-            <p className="text-blue-400 text-center mb-4">Processing... Please wait.</p>
-          )}
-          {responseMessage && (
-            <div
-              className={`p-4 rounded shadow text-sm mt-4 ${
-                responseMessage.includes("Error")
-                  ? "bg-red-100 text-red-600"
-                  : "bg-green-100 text-green-600"
-              }`}
-            >
-              <h2 className="font-semibold mb-2">Response:</h2>
-              <p>{responseMessage}</p>
-            </div>
-          )}
-        </form>
-      </div>
-     
+        {userData && (
+          <div className="mt-6">
+            <h2 className="text-lg font-semibold">User Details:</h2>
+            <p>Name: {userData.name}</p>
+            <p>Email: {userData.email}</p>
+            <p>Phone Number: {userData.phoneNumber}</p>
+            <p>Vehicle Number: {userData.vehicleNumber}</p>
+            <p>Truck Capacity: {userData.truckCapacity} kg</p>
+            <p>Total Weight: {totalWeight} kg</p>
+            {totalWeight >= capacity && <p className="text-red-500">Truck is full!</p>}
+          </div>
+        )}
+      </form>
     </div>
-    
   );
 };
 
