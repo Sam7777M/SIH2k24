@@ -1,4 +1,3 @@
-// src/components/ScheduleReg.jsx
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import QrCodeContext from "../pages/QrCodeContext";
@@ -43,9 +42,9 @@ const ScheduleReg = () => {
             if (response.ok) {
                 console.log("Data submitted successfully:", result);
 
-                // Set the QR code data in context and navigate to the next page
+                
                 setQrData(qrCodeValue);
-                navigate("/choosepartner");
+                navigate("/qreg");
             } else {
                 console.error("Error submitting data:", result);
                 alert("Failed to submit the data. Please try again.");
@@ -55,6 +54,8 @@ const ScheduleReg = () => {
             alert("An error occurred while submitting the data. Please try again.");
         }
     };
+
+    
 
     return (
         <div
@@ -179,12 +180,12 @@ const ScheduleReg = () => {
                     </div>
                 </div>
 
-                <div className="flex justify-center mt-6">
+                <div className="mt-6 text-center">
                     <button
                         type="submit"
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-md w-full max-w-xs"
+                        className="px-6 py-3 text-lg text-white bg-blue-500 rounded-full hover:bg-blue-600"
                     >
-                        SUBMIT
+                        Submit
                     </button>
                 </div>
             </form>

@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -38,14 +40,12 @@ const Dr3 = () => {
 
     return (
         <div
-            className="mt-16 h-[60vh] w-[80vw] sm:h-[60vh] md:h-[70vh] lg:h-[120vh] xl:h-[130vh] bg-cover bg-center"
-            style={{
-                backgroundImage:
-                    'url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Truck_map_concept.png/800px-Truck_map_concept.png")',
-                backgroundBlendMode: "darken",
-                backgroundColor: "rgba(0, 0, 0, 0.6)", // Dark overlay for better visibility of text
-            }}
-        >
+            className="mt-16 h-[60vh] w-[80vw] sm:h-[60vh] md:h-[70vh] lg:h-[95vh]  bg-cover bg-center rounded-3xl"
+        style={{
+          backgroundBlendMode: "darken",
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+        }}
+      >
             <form
                 className="w-full max-w-md bg-transparent p-6 rounded-md space-y-8"
                 onSubmit={handleSubmit}
@@ -65,7 +65,7 @@ const Dr3 = () => {
                         value={formData.hrs}
                         onChange={handleChange}
                         placeholder="Enter operational hours (e.g., 9:00 AM - 6:00 PM)"
-                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
                     />
                 </div>
 
@@ -84,7 +84,7 @@ const Dr3 = () => {
                         value={formData.des}
                         onChange={handleChange}
                         placeholder="Enter the designation (e.g., Assistant Postmaster)"
-                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
                     />
                 </div>
 
@@ -103,7 +103,7 @@ const Dr3 = () => {
                         value={formData.mno}
                         onChange={handleChange}
                         placeholder="Enter the mobile number (e.g., 9876543210)"
-                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
                     />
                 </div>
 
@@ -120,7 +120,7 @@ const Dr3 = () => {
                         name="service"
                         value={formData.service}
                         onChange={handleChange}
-                        className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
                     >
                         <option value="" disabled>
                             DoP-Specific Services
@@ -137,11 +137,13 @@ const Dr3 = () => {
                 {error && <p className="text-red-500 text-sm">{error}</p>}
                 {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
 
-                {/* Submit Button */}
-                <div className="flex justify-center mt-6">
+              
+            </form>
+              {/* Submit Button */}
+              <div className="flex justify-center mt-6">
                     <Link
                         to="/reg13" // Replace with your target route
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-md w-full max-w-xs text-center block"
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-3xl w-full max-w-xs text-center block"
                     >
                         NEXT
                     </Link>
@@ -156,7 +158,6 @@ const Dr3 = () => {
                         I have an account - Sign In
                     </Link>
                 </div>
-            </form>
         </div>
     );
 };

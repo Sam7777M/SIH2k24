@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 
@@ -14,7 +16,7 @@ const FleetCard = ({ fleet }) => {
                     message: `We need a truck from ${fleet.preferredFrom} to ${fleet.preferredTo}.`,
                 }),
             });
-
+     
             if (!response.ok) throw new Error("Failed to send message");
             alert("Message sent to the partner's dashboard!");
         } catch (err) {
@@ -23,7 +25,7 @@ const FleetCard = ({ fleet }) => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-lg w-full max-w-md border p-4">
+        <div className="bg-white rounded-lg shadow-lg w-full max-w-md border p-4 mt-4  hover:shadow-xl hover:scale-105 transition-transform ">
             <img
                 src={fleet.image || "./public/images/partner1.jpg"}
                 alt="Fleet"
@@ -62,9 +64,13 @@ const ChoosePartner = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-100 p-4">
+        
+        <div className="min-h-screen bg-orange-100 p-20">
             <Navbar />
-            <h1>Choose Your Fleet Partner</h1>
+            <h1 class="text-5xl font-bold text-center text-black">
+    Choose Your Fleet Partner
+</h1>
+
             {error && <p className="text-red-500">{error}</p>}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {fleetData.map((fleet) => (

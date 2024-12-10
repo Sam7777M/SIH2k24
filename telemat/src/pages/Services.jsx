@@ -1,3 +1,6 @@
+
+
+
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import CSS
@@ -164,7 +167,7 @@ const Services = () => (
       margin: '0 auto',
       borderRadius: '30px',
       backgroundImage:
-        'linear-gradient(81.47deg, rgba(11, 9, 10, 0.7) 32.85%, rgba(39, 42, 46, 0.7) 76.97%, rgba(52, 58, 64, 0.7) 96.48%), url("/public/images/crowd.jpeg")',
+        'linear-gradient(81.47deg, rgba(11, 9, 10, 0.7) 32.85%, rgba(39, 42, 46, 0.7) 76.97%, rgba(52, 58, 64, 0.7) 96.48%), url("/public/images/crowd.jpg")',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

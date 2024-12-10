@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Fo1 = () => {
     const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ const Fo1 = () => {
 
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const navigate = useNavigate(); // Hook for navigation
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -31,7 +32,7 @@ const Fo1 = () => {
         }
         setError("");
         try {
-            const response = await fetch("http://localhost:5000/api/register", {
+            const response = await fetch("http://localhost:5000/api/partner", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -39,9 +40,13 @@ const Fo1 = () => {
                 body: JSON.stringify(formData),
             });
 
-            const data = await response.json();
+            const partner = await response.json();
             if (response.ok) {
-                setSuccessMessage("Data saved successfully!");
+                setSuccessMessage("Redirecting...");
+                setTimeout(() => {
+                    // Pass the unique ID to the next page for user-specific data
+                    navigate("/reg32"); // Redirect to partner's specific page
+                }, 1500);
                 setFormData({
                     name: "",
                     city: "",
@@ -55,7 +60,7 @@ const Fo1 = () => {
                     preferredCost: "",
                 });
             } else {
-                setError(data.message || "Error saving data.");
+                setError(partner.message || "Error saving data.");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -78,7 +83,7 @@ const Fo1 = () => {
                 onSubmit={handleSubmit}
             >
                 {/* Form Fields */}
-                {[
+                {[ 
                     { id: "name", label: "Name", placeholder: "Enter your name" },
                     { id: "city", label: "City", placeholder: "Enter your city" },
                     { id: "phone", label: "Phone No", placeholder: "Enter your phone number" },
@@ -122,7 +127,7 @@ const Fo1 = () => {
                 {/* Sign In Link */}
                 <div className="flex justify-center mt-4">
                     <Link
-                        to="/login"
+                        to="/login2"
                         className="text-white underline text-sm hover:text-orange-500"
                     >
                         I have an account - Sign In

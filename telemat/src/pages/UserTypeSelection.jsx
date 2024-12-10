@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -6,42 +7,81 @@ const UserTypeSelection = () => {
 
     return (
         <div
-            className="h-screen w-screen flex flex-col justify-center items-center bg-gray-100"
+            className="min-h-screen w-full flex flex-col items-center justify-center bg-cover bg-center"
             style={{
-                backgroundImage: 'url("https://example.com/background.jpg")',
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundImage: 'url("/public/images/Reg2.jpeg")',
+                backgroundBlendMode: "multiply", // Ensures both the image and color blend nicely
+                backgroundColor: "rgba(75, 65, 65, 0.8)", // Adds the overlay color
             }}
         >
-            <h1 className="text-3xl font-bold text-gray-800 mb-8">Select Your Role</h1>
-            <div className="space-y-4">
-                {/* Fleet Owner Button */}
-                <Link to="/dop">
-                    <button
-                        className="bg-blue-500 text-white py-3 px-8 rounded-md text-lg font-semibold hover:bg-blue-600"
-                    >
-                        I'm a Fleet Owner
-                    </button>
-                </Link>
+            
+        
+            <div
+  className="rounded-lg shadow-lg w-[60%] h-[80vh] mx-auto flex flex-col justify-center items-center"
+  style={{
+    backgroundPosition: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.4)", // Background overlay
+    backgroundBlendMode: "overlay", // Makes the overlay visible
+  }}
+>
+  {/* Title */}
+  <div className="text-5xl font-bold text-white mb-12 text-center">
+    Select Your Role
+  </div>
 
-                {/* DOP Button */}
-                <Link to="/3pl">
-                    <button
-                        className="bg-green-500 text-white py-3 px-8 rounded-md text-lg font-semibold hover:bg-green-600"
-                    >
-                        I'm DOP
-                    </button>
-                </Link>
+  {/* Buttons Section */}
+  <div className="flex flex-col gap-5 items-center w-full">
+    {/* Fleet Owner Button */}
+    <Link to="/dop">
+      <button
+        className="text-white rounded-md text-lg font-semibold transition-transform transform hover:scale-105"
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.4)", // Dark overlay for better visibility
+          height: "60px",
+          width: "800px", // Relative width for better responsiveness
+          borderRadius: "15px",
+        }}
+      >
+        I'm a Delivery Partner
+      </button>
+    </Link>
 
-                {/* 3PL Button */}
-                <Link to="/threepl">
-                    <button
-                        className="bg-orange-500 text-white py-3 px-8 rounded-md text-lg font-semibold hover:bg-orange-600"
-                    >
-                        I'm 3PL
-                    </button>
-                </Link>
-            </div>
+    {/* DOP Button */}
+    <Link to="/dop">
+      <button
+        className="text-white rounded-md text-lg font-semibold transition-transform transform hover:scale-105"
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.4)", // Dark overlay for better visibility
+          height: "60px",
+          width: "800px",
+          borderRadius: "15px",
+        }}
+      >
+        I'm DOP
+      </button>
+    </Link>
+
+    {/* 3PL Button */}
+    <Link to="/3pl">
+      <button
+        className="text-white rounded-md text-lg font-semibold transition-transform transform hover:scale-105"
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.4)", // Dark overlay for better visibility
+          height: "60px",
+          width: "800px",
+          borderRadius: "15px",
+        }}
+      >
+        I'm 3PL
+      </button>
+    </Link>
+  </div>
+</div>
+
+
+        
+ 
+
         </div>
     );
 };
