@@ -30,7 +30,7 @@ const ScheduleReg = () => {
 
         try {
             // Send the form data to the backend
-            const response = await fetch("https://sih-2k24-seven.vercel.app/api/schedule", {
+            const response = await fetch("http://localhost:5000/api/schedule", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

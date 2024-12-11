@@ -22,7 +22,7 @@ const LoginForm = () => {
     setSuccessMessage("");
 
     try {
-      const response = await fetch("https://sih-2k24-seven.vercel.app/api/login", {
+      const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

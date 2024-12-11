@@ -47,7 +47,7 @@ const Aopt = () => {
       setStartPoint(currentLocation);
 
       try {
-        await axios.post("https://sih-2k24-seven.vercel.app/api/coordinates", currentLocation);
+        await axios.post("http://localhost:5000/api/coordinates", currentLocation);
       } catch (error) {
         console.error("Error sending location to server:", error);
       }

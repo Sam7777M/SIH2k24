@@ -8,7 +8,7 @@ const SharedRoute = ({ match }) => {
   useEffect(() => {
     const fetchRoute = async () => {
       try {
-        const response = await axios.get(`https://sih-2k24-seven.vercel.app/api/routes/${match.params.id}`);
+        const response = await axios.get(`http://localhost:5000/api/routes/${match.params.id}`);
         setRouteData(response.data);
       } catch {
         alert("Error loading route");

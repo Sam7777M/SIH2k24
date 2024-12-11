@@ -10,7 +10,7 @@ const Qreg = () => {
         if (qrData) {
             const saveQrToDatabase = async () => {
                 try {
-                    const response = await fetch("https://sih-2k24-seven.vercel.app/api/saveQr", {
+                    const response = await fetch("http://localhost:5000/api/saveQr", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

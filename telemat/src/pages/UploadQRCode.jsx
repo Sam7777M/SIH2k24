@@ -49,7 +49,7 @@ const UploadQRCode = () => {
         setQrData(result.text);
         localStorage.setItem("qrrData", result.text);
     
-        const response = await fetch("https://sih-2k24-seven.vercel.app/api/handleQrData", {
+        const response = await fetch("http://localhost:5000/api/handleQrData", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -6,7 +6,7 @@ const Dopnot = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch("https://sih-2k24-seven.vercel.app/api/messages");
+        const response = await fetch("http://localhost:5000/api/messages");
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
 

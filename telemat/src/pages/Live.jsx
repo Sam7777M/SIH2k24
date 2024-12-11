@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import io from "socket.io-client";
 
-const socket = io("https://sih-2k24-seven.vercel.app/");
+const socket = io("http://localhost:5000/");
 
 // A helper component to update the map's center
 const MapUpdater = ({ position }) => {

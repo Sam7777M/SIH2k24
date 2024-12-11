@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import * as turf from "@turf/turf";
 
 // Establish the socket connection
-const socket = io("https://sih-2k24-seven.vercel.app");
+const socket = io("http://localhost:5000");
 
 // Component to select the geofence center by clicking on the map
 const GeofenceSelector = ({ setGeofenceCenter }) => {

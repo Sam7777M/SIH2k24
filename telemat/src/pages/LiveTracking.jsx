@@ -9,7 +9,7 @@ const LiveTracking = () => {
             const { latitude, longitude } = position.coords;
 
             // Send location to backend
-            fetch('https://sih-2k24-seven.vercel.app/api/update-location', { // Updated URL
+            fetch('http://localhost:5000/api/update-location', { // Updated URL
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

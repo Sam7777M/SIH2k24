@@ -9,7 +9,7 @@ const Fleetnot = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch("https://sih-2k24-seven.vercel.app/api/messages");
+        const response = await fetch("http://localhost:5000/api/messages");
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
 
@@ -32,7 +32,7 @@ const Fleetnot = () => {
   const handleResponse = async (messageId, status) => {
     try {
       // Update the message status in the fleet owner's dashboard
-      const response = await fetch(`https://sih-2k24-seven.vercel.app/api/messages/${messageId}`, {
+      const response = await fetch(`http://localhost:5000/api/messages/${messageId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const Fleetnot = () => {
       if (!response.ok) throw new Error("Failed to update message status");
 
       // Send "We are Ready" to the DOP admin
-      const dopResponse = await fetch("https://sih-2k24-seven.vercel.app/api/messages", {
+      const dopResponse = await fetch("http://localhost:5000/api/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

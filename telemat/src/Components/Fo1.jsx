@@ -32,7 +32,7 @@ const Fo1 = () => {
         }
         setError("");
         try {
-            const response = await fetch("https://sih-2k24-seven.vercel.app/api/partner", {
+            const response = await fetch("http://localhost:5000/api/partner", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
