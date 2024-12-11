@@ -109,6 +109,7 @@ function App() {
             <Route path="/live2" element={<Live2 />} />
             <Route path="/qregt" element={<Qregt />} />
             <Route path="/choosepartnert" element={<ChoosePartnert />} />
+            <Route path="/reg3" element={<Reg3 />} />
            
             
 

@@ -11,7 +11,9 @@ const ScheduleReg = () => {
         destination: "",
         pickupDate: "",
         dropDate: "",
+        location: "", // Added location
     });
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -41,8 +43,6 @@ const ScheduleReg = () => {
             const result = await response.json();
             if (response.ok) {
                 console.log("Data submitted successfully:", result);
-
-                
                 setQrData(qrCodeValue);
                 navigate("/qreg");
             } else {
@@ -54,8 +54,6 @@ const ScheduleReg = () => {
             alert("An error occurred while submitting the data. Please try again.");
         }
     };
-
-    
 
     return (
         <div
@@ -174,6 +172,23 @@ const ScheduleReg = () => {
                                 id="dropDate"
                                 value={formData.dropDate}
                                 onChange={handleChange}
+                                className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label
+                                htmlFor="location"
+                                className="block text-white text-lg font-semibold mb-2 text-left"
+                            >
+                                Location
+                            </label>
+                            <input
+                                type="text"
+                                id="location"
+                                value={formData.location}
+                                onChange={handleChange}
+                                placeholder="Enter location"
                                 className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>

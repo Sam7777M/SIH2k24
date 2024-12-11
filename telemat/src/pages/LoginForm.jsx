@@ -33,7 +33,7 @@ const LoginForm = () => {
 
       setSuccessMessage("Login successful!");
       setUserCompanyName(data.companyName);
-      navigate("/upload", { state: { companyName: data.companyName } });
+      navigate("/dashboard1", { state: { companyName: data.companyName } });
     } catch (err) {
       setError(err.message);
     }

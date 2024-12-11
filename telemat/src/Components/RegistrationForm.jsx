@@ -46,7 +46,7 @@ const RegisterForm = () => {
 
       setSuccessMessage("Registration successful! Redirecting...");
       setTimeout(() => {
-        navigate("/login3"); // Redirect to the success page
+        navigate("/login3"); // Redirect to the login page
       }, 2000); // Wait for 2 seconds before redirecting
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
@@ -63,7 +63,7 @@ const RegisterForm = () => {
     >
       <form
         className="w-full max-w-md bg-transparent p-6 rounded-md space-y-8"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit} // Connect submit event here
       >
         {["name", "email", "phone", "companyName"].map((field) => (
           <div key={field} className="space-y-2">
@@ -79,8 +79,7 @@ const RegisterForm = () => {
               value={formData[field]}
               onChange={handleChange}
               placeholder={`Enter your ${field}`}
-              className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
-
+              className="w-full p-3 text-white bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
               required
             />
           </div>
@@ -106,21 +105,20 @@ const RegisterForm = () => {
                   ? "confirmation password"
                   : "password"
               }`}
-              className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
-
+              className="w-full p-3 text-white bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl"
               required
             />
           </div>
         ))}
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
+        {successMessage && (
+          <p className="text-green-500 text-sm">{successMessage}</p>
+        )}
 
-      
-      </form>
-      <div className="flex justify-center mt-6 ">
+        <div className="flex justify-center mt-6">
           <button
-            type="submit"
+            type="submit" // Ensure this button triggers the form submit
             className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-3xl w-full max-w-xs"
           >
             Submit
@@ -135,6 +133,7 @@ const RegisterForm = () => {
             I have an account - Sign In
           </Link>
         </div>
+      </form>
     </div>
   );
 };

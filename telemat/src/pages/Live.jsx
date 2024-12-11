@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import io from "socket.io-client";
 
 const socket = io("http://localhost:5000");
+
+// Component to adjust map view
+const FocusMap = ({ location }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (location) {
+      map.setView([location.latitude, location.longitude], 13); // Adjust zoom level as needed
+    }
+  }, [location, map]);
+
+  return null;
+};
 
 const Live = () => {
   const [locations, setLocations] = useState([]);
@@ -16,16 +29,27 @@ const Live = () => {
     return () => socket.off("receive-location");
   }, []);
 
+  const latestLocation = locations[locations.length - 1]; // Get the most recent location
+
   return (
     <div>
       <h1>Live Tracking</h1>
-      <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: "420px", width: "93%"  }}>
+      <MapContainer
+        center={[51.505, -0.09]}
+        zoom={13}
+        style={{ height: "420px", width: "93%" }}
+      >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {locations.map((location, index) => (
-          <Marker key={index} position={[location.latitude, location.longitude]}>
+          <Marker
+            key={index}
+            position={[location.latitude, location.longitude]}
+          >
             <Popup>{`User: ${location.name}`}</Popup>
           </Marker>
         ))}
+        {/* Focus on the latest location */}
+        {latestLocation && <FocusMap location={latestLocation} />}
       </MapContainer>
     </div>
   );

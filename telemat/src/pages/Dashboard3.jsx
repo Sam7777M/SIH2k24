@@ -439,7 +439,7 @@ style={{
   }}
 ></div>
 <Link
-    to="/schedule1" // Replace with the actual route you want to navigate to
+    to="/schedulet" // Replace with the actual route you want to navigate to
     style={{
       position: "absolute",
       top: "60px", // Adjust this value to position text below the ellipse

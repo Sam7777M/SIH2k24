@@ -31,7 +31,7 @@ const UserTypeSelection = () => {
   {/* Buttons Section */}
   <div className="flex flex-col gap-5 items-center w-full">
     {/* Fleet Owner Button */}
-    <Link to="/dop">
+    <Link to="/reg3">
       <button
         className="text-white rounded-md text-lg font-semibold transition-transform transform hover:scale-105"
         style={{

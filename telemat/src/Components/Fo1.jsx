@@ -73,6 +73,7 @@ const Fo1 = () => {
         className="mt-16 h-[130vh] w-[80vw] bg-cover bg-center rounded-xl flex justify-center"
 
             style={{
+                height:'100%',
                
                 backgroundBlendMode: "darken",
                 backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -105,8 +106,7 @@ const Fo1 = () => {
                             value={formData[id]}
                             onChange={handleChange}
                             placeholder={placeholder}
-                            className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                            className="w-full p-3 text-white  bg-[rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 rounded-2xl" />
                     </div>
                 ))}
 

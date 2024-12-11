@@ -18,7 +18,7 @@ const Reg14 = () => {
     >
         <Navbar/>
         <h1 className="text-black text-center text-7xl font-bold mb-4 mt-[150px]">
-  Welcome to <span className="text-black">SAARTHI</span> - Register <br/> now to optimize your logistic <br/> experience
+  Welcome to <span className="text-black">STHI</span> - Register <br/> now to optimize your logistic <br/> experience
 </h1>
 
 <div className="mt-8 space-y-4">

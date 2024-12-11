@@ -8,6 +8,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const multer = require("multer");
 const path = require("path");
+const { type } = require("os");
 const { Schema } = mongoose;
 
 const app = express();
@@ -1006,6 +1007,7 @@ const scheduleSchema = new mongoose.Schema({
   pickupDate: { type: Date, required: true },
   dropDate: { type: Date, required: true },
   uniqueId: { type: String, unique: true, required: true },
+  location: {type: String, required: true},
 });
 
 // Schedule model
@@ -1013,7 +1015,7 @@ const Schedule = mongoose.model("Schedule", scheduleSchema);
 
 // Routes
 app.post("/api/schedule", async (req, res) => {
-  const { name, entities, weight, destination, pickupDate, dropDate, uniqueId } = req.body;
+  const { name, entities, weight, destination, pickupDate, dropDate, uniqueId, location } = req.body;
 
   try {
     // Save schedule data to the database
@@ -1025,6 +1027,7 @@ app.post("/api/schedule", async (req, res) => {
       pickupDate,
       dropDate,
       uniqueId,
+      location,
     });
 
     await newSchedule.save();

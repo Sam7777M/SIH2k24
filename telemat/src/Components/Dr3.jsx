@@ -141,7 +141,7 @@ const Dr3 = () => {
               <div className="flex justify-center mt-6">
                     <Link
                         to="/reg13" // Replace with your target route
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-3xl w-full max-w-xs text-center block"
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-3 rounded-xl w-full max-w-xs text-center block"
                     >
                         NEXT
                     </Link>

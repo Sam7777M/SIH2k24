@@ -49,7 +49,7 @@ const ChoosePartner = () => {
     useEffect(() => {
         const fetchFleetData = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/schedule");
+                const response = await fetch("http://localhost:5000/api/partner");
                 if (!response.ok) throw new Error("Failed to fetch fleet data");
                 const data = await response.json();
                 setFleetData(data);

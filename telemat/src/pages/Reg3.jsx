@@ -1,7 +1,7 @@
 
 import Fo1 from "../Components/Fo1";
 import Navbar from "../Components/Navbar";
-import RegisterForm from "../Components/RegistrationForm";
+
 
 const Reg3 = () => {
   return (
@@ -42,7 +42,7 @@ const Reg3 = () => {
 
 <div className=" mt-8 space-y-4">
 <button
-    className="bg-white hover:bg-white text-black py-2 px-6 rounded-lg w-[500px] mx-auto"
+    className=" bg-blue-500 hover:bg-blue-600 text-black py-2 px-6 rounded-lg w-[500px] mx-auto"
     style={{ fontSize: "18px" }}
   >
     I am the Delivery Partner (Have Vehicle and Driver)
@@ -52,7 +52,7 @@ const Reg3 = () => {
 
 <div className="mt-8 space-y-4">
   <button
-    className=" bg-blue-500 hover:bg-blue-600 text-black py-2 px-6 rounded-lg w-[500px] mx-auto"
+    className=" bg-white hover:bg-white text-black py-2 px-6 rounded-lg w-[500px] mx-auto"
     style={{ fontSize: "18px" }}
   >
     I am the NDC (Want my goods to be Delivered)
