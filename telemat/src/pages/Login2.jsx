@@ -31,6 +31,7 @@ const Login2 = () => {
             }
 
             setSuccessMessage("Login successful!");
+            localStorage.setItem("email", formData.email);
             navigate("/dashboard2", { state: { companyName: data.companyName } });
         } catch (err) {
             setError(err.message || "An error occurred. Please try again.");

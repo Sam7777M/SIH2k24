@@ -10,6 +10,7 @@ const multer = require("multer");
 const path = require("path");
 const { type } = require("os");
 const { Schema } = mongoose;
+const { BrowserQRCodeReader } = require('@zxing/library');
 
 const app = express();
 const server = http.createServer(app);
@@ -164,7 +165,7 @@ app.get("/api/parcels", async (req, res) => {
 
 
 // **Save Schedule Data**
-app.post("/api/schedule", async (req, res) => {
+app.post("/api/schedules", async (req, res) => {
   try {
     const schedule = new Schedule(req.body);
     await schedule.save();
@@ -364,7 +365,7 @@ app.post("/api/auth/reg", async (req, res) => {
       const existingUser = await NewUser.findOne({ email });
       if (existingUser) {
           return res.status(400).json({ message: "Email already registered." });
-      }33
+      }
 
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -549,8 +550,8 @@ app.post("/api/login3", async (req, res) => {
 
 // driver reg and login
 
-mongoose
-  .connect(process.env.MONGO_URI, {
+
+  mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -601,7 +602,7 @@ app.post("/api/drive", async (req, res) => {
       vehicleNumber,
       truckCapacity,
     });
-
+   console.log("new driver", newDriver);
     await newDriver.save();
     res.status(201).json({ message: "Driver registered successfully" });
   } catch (error) {
@@ -653,6 +654,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 const qrSchema = new mongoose.Schema({
   qrData: String, // Store the QR code data
   createdAt: { type: Date, default: Date.now },
+  driver: String,
 });
 
 const QR = mongoose.model("QR", qrSchema);
@@ -661,7 +663,7 @@ const QR = mongoose.model("QR", qrSchema);
 app.post("/api/saveQr", async (req, res) => {
   try {
       const { qrData } = req.body;
-      const newQR = new QR({ qrData });
+      const newQR = new QR({ qrData,  });  
       await newQR.save();
       res.status(201).json({ message: "QR Code data saved successfully!" });
   } catch (error) {
@@ -849,51 +851,53 @@ app.post('/api/messages', async (req, res) => {
 
 //qr save
 
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("MongoDB connected"))
+.catch((err) => console.error("MongoDB connection error:", err));
 
-// Define Schema and Model
-const qrDataSchema = new mongoose.Schema({
-  qrrData: { type: String, required: true, unique: true },
+const dasSchema = new mongoose.Schema({
+  email: String,
 });
 
-const QrData = mongoose.model("QrData", qrDataSchema);
+const Das = mongoose.model('Das', dasSchema);
 
-// API Endpoint
-app.post("/api/handleQrData", async (req, res) => {
-  const { qrrData } = req.body;
-  console.log("Received QR data:", qrrData);
+const dashSchema = new mongoose.Schema({
+  driver: String,
+  pickup: String,
+  destination: String,
+});
 
-  if (!qrrData) {
-    console.error("QR data is missing.");
-    return res.status(400).json({ message: "QR data is required." });
-  }
+const Dash = mongoose.model('Dash', dashSchema);
 
+// Get unique emails
+app.get('/api/schedules', async (req, res) => {
   try {
-    const existingData = await QrData.findOne({ qrrData });
-    console.log("Existing Data:", existingData);
-
-    if (existingData) {
-      await QrData.deleteOne({ qrrData });
-      console.log("Deleted existing QR data.");
-      return res.json({ message: "QR data deleted successfully." });
-    } else {
-      const newQrData = new QrData({ qrrData });
-      await newQrData.save();
-      console.log("Saved new QR data.");
-      return res.json({ message: "QR data saved successfully." });
-    }
+    const schedules = await Schedule.distinct('email');
+    res.json({ emails: schedules });
   } catch (error) {
-    console.error("Error handling QR data:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.error("Error fetching emails:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-}); 
+});
 
+// Update dashboard details
+app.put('/api/dashboard/update', async (req, res) => {
+  const { driver, pickup, destination } = req.body;
+  try {
+    const updatedDashboard = await Dashboard.findOneAndUpdate(
+      { driver },
+      { pickup, destination },
+      { new: true }
+    );
+    res.json({ message: "Details updated successfully", data: updatedDashboard });
+  } catch (error) {
+    console.error("Error updating dashboard details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
 
@@ -906,7 +910,7 @@ app.get("/", (req, res) => {
   res.send("WebSocket Server Running");
 });
 
-// Handle incoming location updates from clients
+// Handle incoming location updates from clients 
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -1008,6 +1012,7 @@ const scheduleSchema = new mongoose.Schema({
   dropDate: { type: Date, required: true },
   uniqueId: { type: String, unique: true, required: true },
   location: {type: String, required: true},
+  email: {type: String, required: true},
 });
 
 // Schedule model
@@ -1015,7 +1020,7 @@ const Schedule = mongoose.model("Schedule", scheduleSchema);
 
 // Routes
 app.post("/api/schedule", async (req, res) => {
-  const { name, entities, weight, destination, pickupDate, dropDate, uniqueId, location } = req.body;
+  const { name, entities, weight, destination, pickupDate, dropDate, uniqueId, location , email } = req.body;
 
   try {
     // Save schedule data to the database
@@ -1028,6 +1033,7 @@ app.post("/api/schedule", async (req, res) => {
       dropDate,
       uniqueId,
       location,
+      email,
     });
 
     await newSchedule.save();
@@ -1165,6 +1171,67 @@ app.get("/api/partner", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 }); 
+
+
+//upload
+
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+// Define Schema and Model
+const qrDataSchema = new mongoose.Schema({
+  qrrData: { type: String, required: true, unique: true },
+});
+
+const QrData = mongoose.model("QrData", qrDataSchema);
+
+// API Endpoint for handling QR Data
+app.post("/api/handleQrData", async (req, res) => {
+  const { qrrData } = req.body;
+  console.log("Received QR data:", qrrData);
+
+  if (!qrrData) {
+    console.error("QR data is missing.");
+    return res.status(400).json({ message: "QR data is required." });
+  }
+
+  try {
+    const existingData = await QrData.findOne({ qrrData });
+    console.log("Existing Data:", existingData);
+
+    if (existingData) {
+      await QrData.deleteOne({ qrrData });
+      console.log("Deleted existing QR data.");
+      return res.json({ message: "QR data deleted successfully." });
+    } else {
+      const newQrData = new QrData({ qrrData });
+      await newQrData.save();
+      console.log("Saved new QR data.");
+      return res.json({ message: "QR data saved successfully." });
+    }
+  } catch (error) {
+    console.error("Error handling QR data:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// API Endpoint for fetching QR data
+app.get("/api/fetchQrData", async (req, res) => {
+  try {
+    const qrData = await QrData.find({});
+    console.log("Fetched QR data:", qrData);
+    res.json(qrData);
+  } catch (error) {
+    console.error("Error fetching QR data:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
 
 
 

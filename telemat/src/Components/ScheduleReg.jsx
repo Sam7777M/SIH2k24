@@ -6,6 +6,7 @@ const ScheduleReg = () => {
     const { setQrData } = useContext(QrCodeContext);
     const [formData, setFormData] = useState({
         name: "",
+        email: "", // Added email field
         entities: "",
         weight: "",
         destination: "",
@@ -29,6 +30,9 @@ const ScheduleReg = () => {
 
         const uniqueId = `ID-${Date.now()}`; // Generate a unique ID
         const qrCodeValue = JSON.stringify({ ...formData, uniqueId });
+
+        // Save form data to local storage
+        localStorage.setItem("formData", JSON.stringify(formData));
 
         try {
             // Send the form data to the backend
@@ -87,6 +91,23 @@ const ScheduleReg = () => {
                                 value={formData.name}
                                 onChange={handleChange}
                                 placeholder="Enter your name"
+                                className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label
+                                htmlFor="email"
+                                className="block text-white text-lg font-semibold mb-2 text-left"
+                            >
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="Enter your email"
                                 className="w-full p-3 text-black rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>

@@ -17,8 +17,11 @@ const Login4 = () => {
         email,
         password,
       });
-
+   
       if (response.status === 200) {
+        localStorage.setItem('email',email);
+        {/*localStorage.setItem('name', response.data.name);
+        localStorage.setItem('objectId', response.data.objectId);*/}
         alert("Login successful!");
         navigate("/upload");
       }

@@ -1,799 +1,260 @@
 import React, { useState, useEffect } from 'react';
+import { FaTruck, FaFileAlt, FaBell, FaQrcode } from "react-icons/fa";
 import Navbar from '../Components/Navbar';
-import Live from './Live'; // Assuming you have a Navbar component
+import axios from 'axios';
 import { Link } from 'react-router-dom';
+import Live from './Live';
 
 const Dashboard3 = () => {
-  // State to store fetched data
-  const [dashboardData, setDashboardData] = useState({
-    overviewMetrics: {
-      parcelsInTransit: 0,
-      completedDeliveries: 0,    
-      pendingDeliveries: 0,
-    },                                     
-    fuelEfficiency: {
-      averageFuelConsumption: 0,
-      fuelCostTrends: [],
-    },
-    capacityUtilization: {
-      capacityUsed: 0,
-      capacityLeft: 0,
-      truckID: '',
-    },
-    deliveryInfo: {
-      trackingNumber: '',
-      pickupLocation: '',
-      contactPerson: '',
-      destination: '',
-    },
-    deliveryPackageInfo: {
-      numberOfEntities: 0,
-      parcelWeight: 0,
-      parcelVolume: 0,
-    },
-    mapInfo: {
-      coordinates: '',
-      checkpoints: 0,
-    },
+  const [deliveries, setDeliveries] = useState({
+    inTransit: 3,
+    completedToday: 2,
+    pending: 1,
   });
 
-  const [loading , setLoading] = useState(true);
+  const [receiveDelivery, setReceiveDelivery] = useState(
+    Array.from({ length: 8 }, (_, idx) => `R: RK-DEL-MUM-${12345 + idx}`)
+  );
 
-  // Fetch data from the backend
+  const [capacityUtilization, setCapacityUtilization] = useState({
+    used: 53,
+    unused: 47,
+    truckId: 'A123',
+  });
+
+  const [currentRoute, setCurrentRoute] = useState({
+    parcelId: 'TRK-DEL-MUM-12345',
+    pickup: 'Department of Posts, Central Sorting Office',
+    destination: 'Regional Distribution Hub',
+    name: 'Ravi Kumar',
+  });
+
+  const [packageInfo, setPackageInfo] = useState({
+    entities: 2,
+    weight: '10kg',
+     
+  });
+
+  const [uniqueEmails, setUniqueEmails] = useState([]);
+
   useEffect(() => {
-    const fetchData = async () => {
+    // Fetch unique emails from the backend
+    const fetchUniqueEmails = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/save-parcel');
-        if (response.ok) {
-          const data = await response.json();
+        const response = await axios.get("http://localhost:5000/api/fetchQrData");
+        console.log("!!1", response)
+        const firstObject = response.data[0];
 
-          // Map or transform the data to match the expected structure if necessary
-          setDashboardData((prevState) => ({
-            ...prevState,
-            overviewMetrics: {
-              parcelsInTransit: data.parcelsInTransit || 0,
-              completedDeliveries: data.completedDeliveries || 0,
-              pendingDeliveries: data.pendingDeliveries || 0,
-            },
-          }));
-        } else {
-          console.error('Failed to fetch data', response.status);
-        }
+// Parse the qrrData string to get a JavaScript object
+const parsedData = JSON.parse(firstObject.qrrData);
+
+// Access the entities value
+const entities = parsedData.entities;
+const weight = parsedData.weight;
+const name = parsedData.name;
+const destination = parsedData.destination;
+const uniqueId =parsedData.uniqueId;
+const pickup =  parsedData.pickupDate;
+
+
+        setPackageInfo({
+          entities: entities,
+          weight: weight,
+
+          
+        });
+        setCurrentRoute({
+          pickup: pickup,
+          name: name,
+          destination: destination,
+          parcelId: uniqueId,
+        })
+        setUniqueEmails(response.data.emails);
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching emails:", error);
       }
     };
 
-    fetchData();
+    fetchUniqueEmails();
   }, []);
 
+  const handleShowMoreDeliveries = () => {
+    setReceiveDelivery((prev) => [
+      ...prev,
+      ...Array.from({ length: 5 }, (_, idx) => `R: RK-DEL-MUM-${12353 + idx}`),
+    ]);
+  };
+
+  const handleUpdateDetails = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/dashboard/update", {
+        driver: currentRoute.driver,
+        pickup: currentRoute.pickup,
+        destination: currentRoute.destination,
+      });
+      if (response.data.message) {
+        alert(response.data.message);
+        setCurrentRoute(response.data.data); // Update state with the new details
+      }
+    } catch (error) {
+      console.error("Error updating dashboard details:", error);
+    }
+  };
+
   return (
-    <div className="h-screen bg-gradient-to-b from-gray-200 to-blue-100 p-4">
-    {/* Navbar */}
-    <Navbar/>
-
-    {/* Rectangle Div */}
-    <div className="h-16  bg-[rgba(30,45,52,1)] flex items-center justify-start px-8 rounded-full mt-20 relative"
-     style={{ width: "1370px", left:"55px" }} // Decreased width
->
-<div className="w-4 h-4 bg-[rgba(30,45,52,1)] rounded-full mr-10"></div>
-<span className="text-white">Welcome</span>
-
-{/* Ellipse 12 */}
-<div 
-className ="absolute w-20 h-20 -top-2 left-0 rounded-full bg-[#1e2d34] sm:w-16 sm:h-16 sm:-top-1 md:w-20 md:h-20 md:-top-2">
-</div>
-
-</div>
-
-
-    {/* Main Content */}
-    <div className="grid grid-cols-3 mt-5">
-    
-      {/* 1st Div (Overview Metrics, Fuel Efficiency, Capacity Utilization) */}
-<div className="flex ml-4">
-{/* Left side for Overview Metrics */}
-<div 
-className="text-white p-4 rounded-3xl mb-4 bg-[#3e4a56] w-48 h-[409px] relative left-12 top-0 gap-5 opacity-100 sm:w-40 sm:h-[350px] sm:left-8 md:w-48 md:h-[409px] md:left-12">
-
-
-  {/* Overlapping div */}
-  <div 
-className="absolute top-0 left-0 w-48 h-10 bg-[#2A3644] flex items-center justify-center font-semibold text-white italic text-[16px] leading-[19.36px] rounded-t-[20px] z-20 sm:w-40 sm:h-8 sm:text-[14px] sm:leading-[18px] md:w-48 md:h-10 md:text-[16px] md:leading-[19.36px]">
-
-
-    Overview Metrics
-  </div>
-
-  <h2 className="text-l font-bold mb-4 mt-7">Total Deliveries in Transit: 3</h2>
-  <div className="space-y-20">
     <div>
-      <p>Total Parcels in Transit: {dashboardData.overviewMetrics.parcelsInTransit}</p>
-    </div>
-    <div>
-      <p>Completed Deliveries Today: {dashboardData.overviewMetrics.completedDeliveries}</p>
-    </div>
-    <div>
-      <p>Pending Deliveries: {dashboardData.overviewMetrics.pendingDeliveries}</p>
-    </div>
-  </div>
-</div>
-
-{/* Right side for Fuel Efficiency and Capacity Utilization */}
-<div className="flex flex-col">
- {/* Fuel Efficiency */}
- <div
-      className="p-4 rounded-md mb-4"
-      style={{
-        backgroundColor: 'rgba(62, 74, 86, 1)',
-        width: '200px',
-        height: '242px',
-        top: '0px',
-        left: '65px',
-        gap: '0px',
-        borderRadius: '20px',
-        opacity: '1', // Set to 1 for visibility
-        position: 'relative',
-      }}
-    >
-      <p> {dashboardData.fuelEfficiency.averageFuelConsumption}</p>
-      <p> {dashboardData.fuelEfficiency.fuelCostTrends.join(', ')}</p>
-
-      {/* Original Overlapping div */}
-      <div
-        style={{
-          backgroundColor: 'rgba(42, 54, 68, 1)',
-          width: '200px',
-          height: '40px',
-          top: '0px',
-          left: '0px',
-          gap: '0px',
-          borderRadius: '20px 20px 0px 0px',
-          opacity: '1',
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontWeight: '600',
-          fontSize: '16px',
-          fontStyle: 'italic',
-          lineHeight: '19.36px',
-          textAlign: 'left',
-          textUnderlinePosition: 'from-font',
-          textDecorationSkipInk: 'none',
-          color: 'white',
-          zIndex: 2,
-        }}
-      >
-      Vehicle Health    
-      </div>
-
-      {/* Light div overlapping */}
-      <div
-        style={{
-          background: 'rgba(80, 96, 106, 1)',
-          width: '162px',
-          height: '35px',
-          top: '145px',
-          left: '20px',          
-          
-          borderRadius: '10px',
-          opacity: '1',
-          position: 'absolute',
-          display: 'flex',
-          cursor:'pointer',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '12px',
-          color: 'white',
-          zIndex: 2,
-        }}
-      >
-        Fuel Level 
-      </div>
-
-      {/* Light div overlapping */}
-      <div
-        style={{
-          background: 'rgba(80, 96, 106, 1)',
-          width: '162px',
-          height: '35px',
-          top: '190px',
-          left: '20px',
-          gap: '0px',
-          borderRadius: '10px',
-          opacity: '1',
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '13px',
-          color: 'white',
-          cursor:'pointer',
-          zIndex: 2,
-        }}
-      >
-        Fuel Cost Trends
-      </div>
-
-       {/* Light div overlapping */}
-       <div
-        style={{
-          background: 'rgba(80, 96, 106, 1)',
-          width: '162px',
-          height: '35px',
-          top: '100px',
-          left: '20px',          
-          cursor:'pointer',
-          borderRadius: '10px',
-          opacity: '1',
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '12px',
-          color: 'white',
-          zIndex: 2,
-        }}
-      >
-       Engine Temperature 
-      </div>
-
-       {/* Light div overlapping */}
-       <div
-        style={{
-          background: 'rgba(80, 96, 106, 1)',
-          width: '162px',
-          height: '35px',
-          top: '55px',
-          left: '20px',          
-          cursor:'pointer',
-          borderRadius: '10px',
-          opacity: '1',
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '12px',
-          color: 'white',
-          zIndex: 2,
-        }}
-      >
-       Tire Pressure
-      </div>
-    </div>
-
-  {/* Capacity Utilization */}
-  <div
-    className="p-4 rounded-md ml-2"
-    style={{
-      background: 'rgba(62, 74, 86, 1)',
-      width: '200px',
-      height: '158px',
-      top: '430px',
-      left: '280px',
-      gap: '0px',
-      borderRadius: '20px',
-      opacity: '0px',
-      position: 'absolute',
-    }}
-  >
-    <div
-      style={{
-        backgroundColor: 'rgba(42, 54, 68, 1)',
-        width: '200px',
-        height: '45px',
-        top: '0px',
-        left: '0px',
-        gap: '0px',
-        borderRadius: '20px 20px 0px 0px',
-        opacity: '1',
-        position: 'absolute',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontWeight: '600',
-        fontSize: '16px',
-        fontStyle: 'italic',
-        lineHeight: '19.36px',
-        textAlign: 'center',
-        textUnderlinePosition: 'from-font',
-        textDecorationSkipInk: 'none',
-        color: 'white',
-        zIndex: 2,
-      }}
-    >
-      Capacity Utilization <br /> Metrics
-    </div>
-
-    
-    <div
-      className="p-9"
-      style={{
-        opacity: '0px',
-        fontSize: '11px',
-        fontWeight: '400',
-        lineHeight: '13.31px',
-        textAlign: 'center',
-        textUnderlinePosition: 'from-font',
-        textDecorationSkipInk: 'none',
-        color: 'white',
-      }}
-    >
-      <p>
-        {dashboardData.capacityUtilization.capacityLeft}% capacity left unused in Truck {' '}
-        {dashboardData.capacityUtilization.truckID}
-      </p>
-    </div>
-{/* Added New Div */}
-<div
-style={{
-  width: '410px',
-  height: '83px',
-  top: '170px',
-  right: '0px',
-  gap: '0px',
-  borderRadius: '20px',
-  opacity: '0px',
-  background: 'rgba(62, 74, 86, 1)',
-  position: 'absolute', // Required for positioning
-  display: 'flex',
-  justifyContent: 'center', // Center the ellipses horizontally
-  alignItems: 'center', // Vertically center the ellipses
-  padding: '0 10px', // Optional padding to add spacing around the div
-}}
->
-{/* Ellipse 1 */}
-<Link
-to="/schedule1" // The link you want to navigate to
-style={{
-  position: 'absolute',
-  width: '50px',
-  height: '50px',
-  borderRadius: '50%', // Circular shape
-  backgroundColor: 'rgba(54, 64, 74, 1)',
-  opacity: '1', // Set opacity to 1 for visibility
-  backgroundSize: 'cover',
-  top: '5px',
-  mixBlendMode: 'hard-light', // Apply hard light blend mode
-  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.4)', // Box shadow
-  backgroundPosition: 'center',
-  backgroundImage: 'url(/public/images/e1.png)', // Image inside the ellipse
-  left: '40px', // Position first ellipse on the left
-  display: 'block', // Ensure the link is a block-level element so that it occupies the area of the div
-}}
->
-{/* Optionally, you can add content or a tooltip here */}
-</Link>
- {/* Schedule a Delivery text below Ellipse 1 */}
- <div
-  style={{
-    position: 'absolute',
-    top: '60px', // Adjust this value to position text below the ellipse
-    right: '143px', // Keep the text aligned with the ellipse
-    color: 'rgba(255, 255, 255, 1)', // Text color
-    fontSize: '6px', // Font size as specified
-    fontWeight: '400', // Set font weight to 400
-    lineHeight: '7.26px', // Set line height
-    textAlign: 'center', // Center the text
-    width: '100%', // Ensure text width matches the container's width
-  }}
->
-  Schedule a <br /> Delivery
-</div>
-
-
-{/* Ellipse 2 */}
-<div
-  style={{
-    position: 'absolute',
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%', // Circular shape
-    backgroundColor: 'rgba(54, 64, 74, 1)', // Placeholder color
-    opacity: '1', // Set opacity to 1 for visibility
-    backgroundSize: 'cover',
-    top:'5px',
-    mixBlendMode: 'hard-light', // Apply hard light blend mode
-    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.4)', // Box shadow
-    backgroundPosition: '',
-    backgroundImage: 'url(/public/images/e2.png)', // Image inside the ellipse
-    left: '135px', // Adjust position for overlap
-  }}
-></div>
-
-<div
-  style={{
-    position: 'absolute',
-    top: '60px', // Adjust this value to position text below the ellipse
-    right: '46px', // Keep the text aligned with the ellipse
-    color: 'rgba(255, 255, 255, 1)', // Text color
-    fontSize: '6px', // Font size as specified
-    fontWeight: '400', // Set font weight to 400
-    lineHeight: '7.26px', // Set line height
-    textAlign: 'center', // Center the text
-    width: '100%', // Ensure text width matches the container's width
-  }}
->
-  Generate MIS  <br /> Reports
-</div>
-
-{/* Ellipse 3 */}
-<div
-  style={{
-    position: 'absolute',
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%', // Circular shape
-    backgroundColor: 'rgba(54, 64, 74, 1)',
-    opacity: '1', // Set opacity to 1 for visibility
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    top:'5px',
-    mixBlendMode: 'hard-light', // Apply hard light blend mode
-    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.4)', // Box shadow
-    backgroundImage: 'url(/public/images/e3.png)', // Image inside the ellipse
-    left: '230px', // Adjust position for overlap
-  }}
-></div>
-<Link
-    to="/schedulet" // Replace with the actual route you want to navigate to
-    style={{
-      position: "absolute",
-      top: "60px", // Adjust this value to position text below the ellipse
-      left: "50px", // Keep the text aligned with the ellipse
-      color: "rgba(255, 255, 255, 1)", // Text color
-      fontSize: "6px", // Font size as specified
-      fontWeight: "400", // Set font weight to 400
-      lineHeight: "7.26px", // Set line height
-      textAlign: "center", // Center the text
-      width: "100%", // Ensure text width matches the container's width
-      textDecoration: "none", // Remove underline from the link
-      cursor: "pointer", // Make it look like a button
-    }}
-  >
-    Alerts & <br /> Notifications
-  </Link>
-
-{/* Ellipse 4 */}
-<div
-  style={{
-    position: 'absolute',
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%', // Circular shape
-    backgroundColor: 'rgba(54, 64, 74, 1)',
-    opacity: '1', // Set opacity to 1 for visibility
-    backgroundSize: 'cover',
-    mixBlendMode: 'hard-light', // Apply hard light blend mode
-    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.4)', // Box shadow
-    backgroundPosition: 'center',
-    backgroundImage: 'url(/public/images/e4.png)', // Image inside the ellipse
-    left: '320px', // Adjust position for overlap
-    top:'5px',
-  }}
-></div>
-<div
-  style={{
-    position: 'absolute',
-    top: '60px', // Adjust this value to position text below the ellipse
-    left: '138px', // Keep the text aligned with the ellipse
-    color: 'rgba(255, 255, 255, 1)', // Text color
-    fontSize: '6px', // Font size as specified
-    fontWeight: '400', // Set font weight to 400
-    lineHeight: '7.26px', // Set line height
-    textAlign: 'center', // Center the text
-    width: '100%', // Ensure text width matches the container's width
-  }}
->
- Check-In & <br />Check-Out QR
-</div>
-</div>
-
-
-
-  </div>
-</div>
-</div>
-
-{/* 2nd div */}
-<div style={{ position: "relative" }}>
-  {/* Ellipse 1 - Previous */}
-  <div
-    style={{
-      width: "50px",
-      height: "50px",
-      position: "absolute",
-    
-      left: "0px",
-      borderRadius: "50%",
-      mixBlendMode: "hard-light", // Blend mode
-      backgroundColor: "rgba(54, 64, 74, 1)",
-      color: "white",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      cursor: "pointer",
-    
-    }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
-  >
-    &#8592;
-  </div>
-
-  {/* Ellipse 2 - Page 1 */}
-  <div
-    style={{
-      width: "50px",
-      height: "50px",
-      position: "absolute",
-    
-      left: "100px",
-      borderRadius: "50%",
-      mixBlendMode: "hard-light", // Blend mode
-      backgroundColor: "rgba(54, 64, 74, 1)",
-      color: "white",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      cursor: "pointer",
-    
-    }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
-  >
-  1
-  </div>
-
-  {/* Ellipse 3 - Page 2 */}
-  <div
-    style={{
-      width: "50px",
-      height: "50px",
-      position: "absolute",
-    
-      left: "200px",
-      borderRadius: "50%",
-      mixBlendMode: "hard-light", // Blend mode
-      backgroundColor: "rgba(54, 64, 74, 1)",
-      color: "white",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      cursor: "pointer",
-    
-    }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
-  >
-   3
-  </div>
-
-  {/* Ellipse 4 - Page 3 */}
-  
-  <div
-    style={{
-      width: "50px",
-      height: "50px",
-      position: "absolute",
-    
-      left: "300px",
-      borderRadius: "50%",
-      mixBlendMode: "hard-light", // Blend mode
-      backgroundColor: "rgba(54, 64, 74, 1)",
-      color: "white",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      cursor: "pointer",
-    
-    }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
-  >
-   4
-  </div>
-  {/* Ellipse 5 - Next */}
-
-  <div
-    style={{
-      width: "50px",
-      height: "50px",
-      position: "absolute",
-    
-      left: "400px",
-      borderRadius: "50%",
-      mixBlendMode: "hard-light", // Blend mode
-      backgroundColor: "rgba(54, 64, 74, 1)",
-      color: "white",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      cursor: "pointer",
-    
-    }}
-    onClick={() => handleNavigation("previous")} // Click handler for previous
-  >
-   &#8594;
-  </div>
-  <div
-className="w-[80] h-[20] "
-
->
-<div  style={{
-  
-  marginTop: "60px"}} >  <Live /> </div>
-
-</div>
-
-
-
-</div>
-
-
-       {/* 3rd Div (Delivery Information and Delivery Package Information) */}
-       <div className="flex flex-col">
-       {/* Delivery Information */}
-<div
-className="bg-gray-800 text-white p-4 rounded-3xl "
-style={{
-  width: "424px",
-  height: "235px",
-  top: "205px",
-  
-
-
-  background: "rgba(62, 74, 86, 1)", // Background color
-   
-}}
->
-<div
-    style={{
-      backgroundColor: 'rgba(42, 54, 68, 1)',
-      width: '424px',
-      height: '40px',
-      bottom: '475px',
-      right: '94px',
-      gap: '0px',
-      borderRadius: '20px 20px 0px 0px',
-      opacity: '1',
-      position: 'absolute', 
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      fontWeight: '600',
-      fontSize: '16px',
-      fontStyle: 'italic',
-      lineHeight: '19.36px',
-      textAlign: 'left',
-      textUnderlinePosition: 'from-font',
-      textDecorationSkipInk: 'none',
-      color: 'white',
-      zIndex: 2,
-    }}
-  >
-  Delivery Information
-  </div>
-
-  <p className="mt-10">📦Parcel ID/Tracking Number: {dashboardData.deliveryInfo.trackingNumber}</p>
-<p className="mt-5">⛟  Pickup: {dashboardData.deliveryInfo.pickupLocation}</p>
-<p className="mt-5">📞 Driver/ Vehicle Assigned : {dashboardData.deliveryInfo.contactPerson}</p>
-<p className="mt-5">📍 Destination: <span>{dashboardData.deliveryInfo.destination}</span></p>
-
-
-</div>
-
-
-        {/* Delivery Package Information */}
+      <Navbar />
+      <div className="bg-[#1c2938] rounded-full flex items-center p-2 gap-4 w-full  mt-20">
         <div
-className="bg-gray-800 text-white p-4 rounded-lg mb-4"
-style={{
-  width: "424px",
-  height: "250px",
-  top: "20px",
-  left: "2px",
-  gap: "0px",
-  position: 'relative', 
-  borderRadius: "20px ",
-  background: "rgba(62, 74, 86, 1)", // Background color
-   
-}}
->
-<div
-    style={{
-      backgroundColor: 'rgba(42, 54, 68, 1)',
-      width: '424px',
-      height: '40px',
-      top:'0px',
-      right: '0px',
-      gap: '0px',
-      borderRadius: '20px 20px 0px 0px',
-      opacity: '1',
-      position: 'absolute', 
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      fontWeight: '600',
-      fontSize: '16px',
-      fontStyle: 'italic',
-      lineHeight: '19.36px',
-      textAlign: 'left',
-      textUnderlinePosition: 'from-font',
-      textDecorationSkipInk: 'none',
-      color: 'white',
-      zIndex: 2,
-    }}
+          className="w-10 h-10 rounded-full bg-center bg-cover"
+          style={{
+            backgroundImage: "url('path/to/your/image.png')",
+          }}
+        ></div>
+        <div className="flex flex-col w-full">
+          <span className="text-white text-base font-bold">Central Sorting Office</span>
+          <div className="w-4/5 h-1 bg-[#3c5161] rounded-full mt-1">
+            <div className="w-1/2 h-full bg-gray-300 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+      <div className="p-20 grid grid-cols-4 gap-4">
+        <div className="bg-[#203a46] text-white p-6 rounded-lg">
+          <h2 className="text-lg font-semibold">Overview Metrics</h2>
+          <div className="mt-4">
+            <div className="mb-4">
+              <p>Total Deliveries in Transit: {deliveries.inTransit}</p>
+              <div className="mt-2 flex items-center">
+                <div className="w-16 h-16 bg-blue-500 rounded-full flex justify-center items-center">
+                  <span className="text-xl">{deliveries.completedToday}</span>
+                </div>
+                <p className="ml-4">Completed Deliveries Today</p>
+              </div>
+            </div>
+            <div className="">
+              <div className="w-16 h-16 bg-green-500 rounded-full flex justify-center items-center">
+                <span className="text-xl">{deliveries.pending}</span>
+              </div>
+              <p className="ml-4">Pending Deliveries</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-[#203a46] text-white p-6 rounded-lg">
+          <h2 className="text-lg font-semibold">Receive Delivery</h2>
+          <ul className="mt-4 text-sm">
+            {receiveDelivery.map((delivery, idx) => (
+              <li key={idx}>{delivery}</li>
+            ))}
+          </ul>
+          <button
+            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={handleShowMoreDeliveries}
+          >
+            Show More
+          </button>
+        </div>
+
+        <div className="bg-[#203a46] text-white p-6 rounded-lg">
+          <h2 className="text-lg font-semibold">Capacity Utilization Metrics</h2>
+          <div className="mt-4 flex items-center space-x-4">
+            <div className="w-16 h-16 bg-blue-500 rounded-full flex justify-center items-center">
+              <span className="text-xl">{capacityUtilization.used}%</span>
+            </div>
+            <p>{capacityUtilization.unused}% capacity left unused in Truck #{capacityUtilization.truckId}</p>
+          </div>
+        </div>
+
+        <div className="bg-[#d9e8ef] flex justify-center items-center py-8">
+          <div className="flex justify-around items-center w-3/4 bg-[#1b3b4a] py-6 px-4 rounded-lg">
+            <div className="flex flex-col items-center text-yellow-400 space-y-2">
+              <div className="bg-[#203a46] w-16 h-16 rounded-full flex justify-center items-center">
+                <FaTruck className="text-3xl" />
+              </div>
+              <p className="text-sm font-medium text-white">Schedule a Delivery</p>
+  <Link to="/schedule1">
+    <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+      Go to Delivery Page
+    </button>
+  </Link>
+            </div>
+            <div className="flex flex-col items-center text-yellow-400 space-y-2">
+              <div className="bg-[#203a46] w-16 h-16 rounded-full flex justify-center items-center">
+                <FaFileAlt className="text-3xl" />
+              </div>
+              <p className="text-sm font-medium text-white">Generate MIS Reports</p>
+            </div>
+            <div className="flex flex-col items-center text-yellow-400 space-y-2">
+              <div className="bg-[#203a46] w-16 h-16 rounded-full flex justify-center items-center">
+                <FaBell className="text-3xl" />
+              </div>
+              <p className="text-sm font-medium text-white">Alerts & Notifications</p>
+            </div>
+            <div className="flex flex-col items-center text-yellow-400 space-y-2">
+              <div className="bg-[#203a46] w-16 h-16 rounded-full flex justify-center items-center">
+                <FaQrcode className="text-3xl" />
+              </div>
+              <p className="text-sm font-medium text-white">Check-In/Out QR</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-span-2 row-span-2 bg-white rounded-lg">
+          <div className="p-4">
+            <h2 className="text-lg font-semibold">Current Route</h2>
+            <div className="bg-gray-200 mt-4 w-full h-96"><Live/></div>
+            <div className="mt-4">
+  <h3 className="text-sm font-semibold">Update Details</h3>
+  <input
+    type="text"
+    placeholder="Pickup Location"
+    value={currentRoute.pickup}
+    onChange={(e) => setCurrentRoute({ ...currentRoute, pickup: e.target.value })}
+    className="mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  <input
+    type="text"
+    placeholder="Destination"
+    value={currentRoute.destination}
+    onChange={(e) => setCurrentRoute({ ...currentRoute, destination: e.target.value })}
+    className="mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  <input
+    type="text"
+    placeholder="Driver Name"
+    value={currentRoute.driver}
+    onChange={(e) => setCurrentRoute({ ...currentRoute, driver: e.target.value })}
+    className="mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  <button
+    className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    onClick={handleUpdateDetails}
   >
- Delivery Package Information
-  </div>
-  <div
-style={{
-  display: "flex",
-  justifyContent: "space-between", // Ensures spacing between elements
-  alignItems: "flex-start", // Align items to the top
-  padding: "20px 15px",
-  fontSize: "10px",
-  fontWeight: "bold",
-  lineHeight: "10px",
-  textAlign: "left",
-  textUnderlinePosition: "from-font",
-  textDecorationSkipInk: "none",
-  color: "white",
-  position: "absolute",
-  top: "30px", // Positioning below the header
-  left: "0px",
-  width: "100%",
-}}
->
-{/* First Column */}
-<div>
-  <span style={{ fontSize: '14px' }}>Number of Entities:</span>
-  <div
-    style={{
-      fontSize: "12px",
-      fontWeight: "normal",
-      marginTop: "5px",
-    }}
-  >
-    <p>Total Parcels:</p>
-    <p>Individual Items:</p>
-  </div>
+    Update Details
+  </button>
 </div>
 
-{/* Second Column */}
-<div>
-  <span style={{ fontSize: '14px' }}>Parcel Weight:</span>
-  <div
-    style={{
-      fontSize: "12px",
-      fontWeight: "normal",
-      marginTop: "5px",
-    }}
-  >
-    <p>Total Weight:</p>
-    <p>Weight in Tonn:</p>
-  </div>
-</div>
+          </div>
+        </div>
 
-{/* Third Column */}
-<div>
-  <span style={{ fontSize: '14px' }}>Parcel Volume:</span>
-  <div
-    style={{
-      fontSize: "12px",
-      fontWeight: "normal",
-      marginTop: "5px",
-    }}
-  >
-    <p>Total Volume:</p>
-    <p>Average Parcel Volume:</p>
-  </div>
-</div>
-</div>
+        <div className="bg-[#203a46] text-white p-6 rounded-lg">
+          <h2 className="text-lg font-semibold">Package Information</h2>
+          <div className="mt-4">
+            <p>Entities: {packageInfo.entities}</p>
+            <p>Weight: {packageInfo.weight}</p>
+            
+          </div>
+        </div>
 
+        <div className="bg-[#203a46] text-white p-6 rounded-lg">
+          <h2 className="text-lg font-semibold">Unique Emails</h2>
+          <ul className="mt-4 text-sm">
+            
+          
+          </ul>
         </div>
       </div>
     </div>
-  </div>
   );
 };
 

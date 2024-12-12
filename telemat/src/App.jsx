@@ -55,6 +55,7 @@ import Schedulet from "./pages/Shdeulet";
 import Qregt from "./Components/Qregt";
 import ChoosePartnert from "./pages/ChoosePartnert";
 
+
 function App() {
   return (
     <QrCodeProvider>
@@ -62,11 +63,11 @@ function App() {
         <div className="App">
           <Routes>
             {/* Use `element` instead of `component` */}
-            <Route path="/" element={<Services />} />
+            <Route path="/" element={<Homepage />} />
             <Route path="/monitor" element={<Monitor />} />
             <Route path="/services" element={<Services />} />
             <Route path="/aopt" element={<Aopt />} />
-            <Route path="/dashboard" element={<UserTypeSelection />} />
+            <Route path="/usertype" element={<UserTypeSelection />} />
             <Route path="/fleet-owner" element={<Reg1 />} />
             <Route path="/3pl" element={<Reg2 />} />
             <Route path="/dop" element={<Reg1 />} />
@@ -75,7 +76,7 @@ function App() {
             <Route path="/schedulet" element={<Schedulet />} />
             <Route path="/qreg" element={<Qreg />} />
             <Route path="/inqr" element={<InQr />} />
-            <Route path="/dashboard1" element={<PartnerDashboard />} />
+            <Route path="/rashboard1" element={<PartnerDashboard />} />
             <Route path="/dashboard2" element={<Dashboard2 />} />
             <Route path="/dashboard3" element={<Dashboard3 />} />
             <Route path="/dr1" element={<Dr1 />} />
@@ -102,14 +103,15 @@ function App() {
             <Route path="/login3" element={<Login3 />} />
             <Route path="/driver" element={<Driver />} />
             <Route path="/login4" element={<Login4 />} />
-            <Route path="/dashboardd" element={<Dashboard />} />   {/**dlere */}
+            <Route path="/dashboard" element={<Dashboard />} />   {/**dlere */}
             <Route path="/login" element={<Login/>} />
             <Route path="/register" element={<Register />} />
-            <Route path="/rashboard1" element={<Dashboard1 />} /> {/**dlere */}
+            <Route path="/dashboard1" element={<Dashboard1 />} /> {/**dlere */}
             <Route path="/live2" element={<Live2 />} />
             <Route path="/qregt" element={<Qregt />} />
             <Route path="/choosepartnert" element={<ChoosePartnert />} />
             <Route path="/reg3" element={<Reg3 />} />
+            
            
             
 

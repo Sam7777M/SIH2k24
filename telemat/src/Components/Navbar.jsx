@@ -96,7 +96,7 @@ const Navbar = () => {
       />
 
       <Link
-        to="/dashboard"
+        to="/usertype"
         style={{
           color: active === "DASHBOARD" ? "rgba(207, 90, 18, 1)" : "white",
           fontSize: "16px",

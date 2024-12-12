@@ -12,8 +12,8 @@ const Dashboard2 = () => {
       pendingDeliveries: 0,
     },
     fuelEfficiency: {
-      averageFuelConsumption: 0,
-      fuelCostTrends: [],
+      averageFuelConsumption: 30,
+      fuelCostTrends: [90-95],
     },
     capacityUtilization: {
       capacityUsed: 0,
@@ -21,19 +21,18 @@ const Dashboard2 = () => {
       truckID: '',
     },
     deliveryInfo: {
-      trackingNumber: '',
-      pickupLocation: '',
-      contactPerson: '',
+     uniqueID: '',
+      location: '',
+      name: '',
       destination: '',
     },
     deliveryPackageInfo: {
-      numberOfEntities: 0,
-      parcelWeight: 0,
-      parcelVolume: 0,
+      weight: 0,
+      entities: 0,
     },
     mapInfo: {
-      coordinates: '',
-      checkpoints: 0,
+      dropDate: '',
+      pickupDate: 0,
     },
   });
 
@@ -43,24 +42,21 @@ const Dashboard2 = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/save-parcel');
-        if (response.ok) {
+        const response = await fetch("http://localhost:5000/api/qrdatas");
+        if (response.status === 200) {
           const data = await response.json();
+          console.log("Fetched Emails:", data.emails);
 
-          // Map or transform the data to match the expected structure if necessary
+          // Update state with the emails
           setDashboardData((prevState) => ({
             ...prevState,
-            overviewMetrics: {
-              parcelsInTransit: data.parcelsInTransit || 0,
-              completedDeliveries: data.completedDeliveries || 0,
-              pendingDeliveries: data.pendingDeliveries || 0,
-            },
+            emails: data.emails,
           }));
         } else {
-          console.error('Failed to fetch data', response.status);
+          console.error("Failed to fetch data:", response.status);
         }
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        console.error("Error fetching dashboard data:", error);
       } finally {
         setLoading(false);
       }
@@ -636,7 +632,7 @@ const Dashboard2 = () => {
   
     <p className="mt-10">📦Parcel ID/Tracking Number: {dashboardData.deliveryInfo.trackingNumber}</p>
 <p className="mt-5">⛟  Pickup: {dashboardData.deliveryInfo.pickupLocation}</p>
-<p className="mt-5">📞 Driver/ Vehicle Assigned : {dashboardData.deliveryInfo.contactPerson}</p>
+<p className="mt-5">📞 Driver/ Vehicle Assigned : {dashboardData.deliveryInfo.name}</p>
 <p className="mt-5">📍 Destination: <span>{dashboardData.deliveryInfo.destination}</span></p>
 
  
